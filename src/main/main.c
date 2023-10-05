@@ -1,9 +1,13 @@
 #include "philosophers.h"
 
-void *f_hilo(void *arg) 
+void *f_hilo(void *args) 
 {
-	printf("%s\n", arg);
-    return NULL;
+	t_philosophers	*vars;
+
+	vars = (t_philosophers *) args;
+	printf("%d, %d, %d\n", vars->time_to_die, vars->time_to_eat, vars->time_to_sleep);
+	printf("hola luci te quiero =)\n\n");
+	return (NULL);
 }
 
 int	verify_args(int argc, char **argv)
@@ -43,25 +47,49 @@ int	create_philo_struct(int argc, char **argv, t_philosophers	*vars)
 	return (0);
 }
 
-int main(int argc, char **argv)
+int	create_threads(int threads, t_philosophers	*vars)
 {
-	pthread_t		thread_id;
-	t_philosophers	vars;
 	int				creacion;
-	char			*mensaje = "hola luci te quiero =)\n";
+	pthread_t		threads_id[threads];
+	int				counter;
+	int				aux;
+	int				espera;
+
+	aux = threads;
+	counter = 0;
+	while (threads)
+	{
+		creacion = pthread_create(&(threads_id[counter]), NULL, f_hilo, vars);
+		if (creacion)
+			return (write(2, "pthread_create fail\n", 21), 1);
+		counter ++;
+		threads --;
+	}
+	counter = 0;
+	while (aux --)
+	{
+		espera = pthread_join(threads_id[counter], NULL);
+		if (espera)
+			return (write(2, "wait pthread fail\n", 19), 1);
+		counter ++;
+	}
+	return (0);
+}
+
+int	main(int argc, char **argv)
+{
+	t_philosophers	vars;
+	int				num_threads;
+	int				err;
 
 	if (verify_args(argc - 1, (argv + 1)))
 		return (1);
 	if (create_philo_struct(argc - 1, argv + 1, &vars))
 		return (write(2, "atoi fail\n", 11), 1);
-	printf("%d, %d, %d\n", vars.time_to_die, vars.time_to_eat, vars.time_to_sleep);
-	creacion = pthread_create(&thread_id, NULL, f_hilo, mensaje);
-	if (creacion)
-		printf("error\n");
-	 int espera = pthread_join(thread_id, NULL);
-    if (espera) {
-        fprintf(stderr, "Error al esperar al hilo\n");
-        return 1;
-    }
-	return(0);
+	num_threads = ft_atoi_chetao(argv[1], &err);
+	if (err)
+		return (write(2, "atoi fail\n", 11), 1);
+	if (create_threads(num_threads, &vars))
+		return (1);
+	return (0);
 }
