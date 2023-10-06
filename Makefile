@@ -3,7 +3,8 @@ NAME := philosophers
 
 # Archivos fuente principales
 SRCS := src/main/main.c		\
-		src/utils/utils.c	
+		src/utils/utils.c	\
+		src/utils/utils_list.c	
 
 # Archivos objeto
 OBJS := $(SRCS:src/%.c=objs/%.o)
