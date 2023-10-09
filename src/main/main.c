@@ -29,9 +29,12 @@ int	verify_args(int argc, char **argv)
 	return (0);
 }
 
+
 int	create_philo_struct(int argc, char **argv, t_philosophers	*vars)
 {
 	int				err;
+	t_ldictionary	*id_fork;
+	int				n_threads;
 
 	err = 0;
 	(*vars).time_to_die = ft_atoi_chetao(argv[1], &err);
@@ -44,13 +47,18 @@ int	create_philo_struct(int argc, char **argv, t_philosophers	*vars)
 		(*vars).time_to_sleep = ft_atoi_chetao(argv[3], &err);
 	if (err)
 		return (1);
+	n_threads = ft_atoi_chetao(argv[0], &err);
+	id_fork = (void *)malloc(sizeof(t_ldictionary));
+	while (n_threads --)
+	{
+		l_dictionary_add_back(&id_fork, l_dictionary_new((pthread_t )-2, 0));
+	}
 	return (0);
 }
 
 int	create_threads(int threads, t_philosophers	*vars)
 {
 	int				creacion;
-	pthread_t		threads_id[threads];
 	int				counter;
 	int				aux;
 	int				espera;
@@ -59,19 +67,18 @@ int	create_threads(int threads, t_philosophers	*vars)
 	counter = 0;
 	while (threads)
 	{
-		creacion = pthread_create(&(threads_id[counter]), NULL, f_hilo, vars);
+		creacion = pthread_create(&(vars->id_fork->key), NULL, f_hilo, vars);
 		if (creacion)
 			return (write(2, "pthread_create fail\n", 21), 1);
 		counter ++;
 		threads --;
 	}
-	counter = 0;
 	while (aux --)
 	{
-		espera = pthread_join(threads_id[counter], NULL);
+		espera = pthread_join(vars->id_fork->key, NULL);
 		if (espera)
 			return (write(2, "wait pthread fail\n", 19), 1);
-		counter ++;
+		vars->id_fork = vars->id_fork->next;
 	}
 	return (0);
 }
