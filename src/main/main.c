@@ -1,4 +1,4 @@
-#include "philosophers.h"
+#include "philo.h"
 
 void *f_hilo(void *args) 
 {
@@ -83,11 +83,34 @@ int	create_threads(int threads, t_philosophers	*vars)
 	return (0);
 }
 
+void	create_list_id_fork()
+{
+	int					counter;
+	t_2link_circ_list	*lista;
+	int					iter;
+
+	iter = 3;
+	counter = 0;
+	lista = NULL;
+	while (iter --)
+	{
+		create_2link_circlist(&lista, create_dictionary_int(NULL, &counter), NULL);
+		printf("while %d\n", lista->next->content.value);
+		// lista = lista->next;
+		counter ++;
+	}
+	printf_content_2link_circ_list(lista);
+}
+
+
+
 int	main(int argc, char **argv)
 {
 	t_philosophers	vars;
 	int				num_threads;
 	int				err;
+
+	create_list_id_fork();
 
 	if (verify_args(argc - 1, (argv + 1)))
 		return (1);
