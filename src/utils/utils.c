@@ -6,11 +6,24 @@
 /*   By: lucia-ma <lucia-ma@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:44:46 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/05 16:12:58 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/10/09 19:56:54 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
+
+t_dictionary	*create_dictionary_int(int *key, int *value)
+{
+	t_dictionary	dictionary;
+
+	if (key)
+		dictionary.key = *key;
+	if (value)
+		dictionary.value = *value;
+	if (!key && !value)
+		return(NULL);
+	return (&dictionary);
+}
 
 int	ft_arr_isdigit(char *arr)
 {

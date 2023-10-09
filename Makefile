@@ -1,9 +1,10 @@
 # Nombre del ejecutable
-NAME := philosophers
+NAME := philo
 
 # Archivos fuente principales
 SRCS := src/main/main.c		\
-		src/utils/utils.c	
+		src/utils/utils.c	\
+		src/utils/utils_circle_2link_list.c \
 
 # Archivos objeto
 OBJS := $(SRCS:src/%.c=objs/%.o)
