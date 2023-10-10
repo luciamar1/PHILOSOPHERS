@@ -3,34 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   utils_circle_2link_list.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucia-ma <lucia-ma@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/09 19:55:54 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/10/10 21:00:42 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 
-int	create_2link_circlist(t_2link_circ_list **head, t_dictionary *content, pthread_t id)
+int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_philo_routine routine)
 {
 	t_2link_circ_list	*new;
 
 	new = malloc(sizeof(t_2link_circ_list));
 	if (!new)
 	{
-		clear_2link_circ_list(head);
+		if (*head)
+			clear_2link_circ_list(head);
 		return (1);
 	}
-	if (content)
-		new->content = content;
-	if (id)
-		new->id = id;
+	new->id_fork = id_fork;
+	new->routine = routine;
 	if (!*head)
 	{
 		new->prev = new;
-		printf("new content 1== %d\n", new->content);
 		new->next = new;
 	}
 	else
@@ -44,21 +42,21 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary *content, pthre
 	return (0);
 }
 
-void	printf_content_2link_circ_list(t_2link_circ_list *list)
+void	printf_fork_2link_circ_list(t_2link_circ_list *list)
 {
 	t_2link_circ_list	*head;
 
 	head = list;
 	printf("\n\n\n");
-	printf("content list == %d\n", list->content);
+	printf("id_fork list == %d\n", list->id_fork.fork);
 	list = list->next;
 	while (list != head)
 	{
 		// printf("que?\n");
-		if(list->content)
-			printf("content list == %d\n", list->content);
+		if(list->id_fork.fork)
+			printf("id_fork list == %d\n", list->id_fork.fork);
 		// printf("aaaaaaa\n");
-		// printf("aaaaa%d\n", list->content != head->content);
+		// printf("aaaaa%d\n", list->id_fork != head->id_fork);
 		// printf("next == %p\n", list->next);
 		list = list->next;
 	}
@@ -85,16 +83,22 @@ int	len_dlist(t_2link_circ_list *stack)
 void	printf_dlist_ind(t_2link_circ_list *list)
 {
 	t_2link_circ_list	*start;
-
-	start = list;
-	printf("ind list == %d\n", (int) list->id);
-	list = list->next;
-	while (list->content != start->content)
+	if (!list)
 	{
-		printf("ind list  ==  %d\n", (int) list->id);
-		list = list->next;
+		//se mete
+		printf("se mete\n");
+		return ;
 	}
-	printf("caracol\n");
+	start = list;
+	printf("ind list == %d\n", (int) list->id_fork.id);
+	if (list->next)
+		list = list->next;
+	while (list != start)
+	{
+		printf("ind list  ==  %d\n", (int) list->id_fork.id);
+		if (list->next)
+			list = list->next;
+	}
 	printf("\n\n");
 }
 
@@ -102,6 +106,7 @@ int	clear_2link_circ_list(t_2link_circ_list **list)
 {
 	t_2link_circ_list	*aux;
 	t_2link_circ_list	*next_aux;
+	int counter = 0;
 
 	if (!*list)
 		return (1);
@@ -109,11 +114,14 @@ int	clear_2link_circ_list(t_2link_circ_list **list)
 	next_aux = (*list)->next;
 	while (next_aux != *list)
 	{
-		free(aux);
+		if (aux)
+			free(aux);
 		aux = next_aux;
 		next_aux = aux->next;
 	}
-	free(aux);
+	printf("counter %d\n", counter);
+	if (aux)
+		free(aux);
 	*list = NULL;
 	return (0);
 }
