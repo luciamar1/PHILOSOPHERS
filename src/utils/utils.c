@@ -6,13 +6,13 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:44:46 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/10 14:15:35 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/10/17 16:46:42 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_dictionary	create_dictionary_int(int id)
+t_dictionary	create_dict_int(int id)
 {
 	t_dictionary	dictionary;
 

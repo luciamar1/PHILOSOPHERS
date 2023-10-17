@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/10 21:00:42 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/10/17 16:03:25 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ int	clear_2link_circ_list(t_2link_circ_list **list)
 {
 	t_2link_circ_list	*aux;
 	t_2link_circ_list	*next_aux;
-	int counter = 0;
 
 	if (!*list)
 		return (1);
@@ -119,7 +118,6 @@ int	clear_2link_circ_list(t_2link_circ_list **list)
 		aux = next_aux;
 		next_aux = aux->next;
 	}
-	printf("counter %d\n", counter);
 	if (aux)
 		free(aux);
 	*list = NULL;
