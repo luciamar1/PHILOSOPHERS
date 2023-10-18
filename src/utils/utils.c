@@ -3,26 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucia-ma <lucia-ma@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:44:46 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/09 21:29:13 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/10/17 16:46:42 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_dictionary	*create_dictionary_int(int *key, int *value)
+t_dictionary	create_dict_int(int id)
 {
 	t_dictionary	dictionary;
 
-	if (key)
-		dictionary.key = *key;
-	if (value)
-		dictionary.value = *value;
-	if (!key && !value)
-		return(NULL);
-	return (&dictionary);
+	dictionary.id = id;
+	dictionary.fork = 0;
+	return (dictionary);
 }
 
 int	ft_arr_isdigit(char *arr)
