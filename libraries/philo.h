@@ -12,7 +12,8 @@ typedef struct s_mutex
 {
 	pthread_mutex_t	fork;
 	pthread_mutex_t	print;
-	pthread_mutex_t	f_hilo;
+	pthread_mutex_t	id;
+	pthread_mutex_t	eat;
 	pthread_mutex_t	init;
 
 }t_mutex;

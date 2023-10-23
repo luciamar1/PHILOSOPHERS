@@ -2,31 +2,28 @@
 
 void change_fork_value(t_2link_circ_list *vars, int state)
 {
-	pthread_mutex_lock(&(vars->mutex.fork));
-	printf("ANTES philo %d is eating\n", vars->id_fork.fork);
-	if(is_par(vars->id_fork.id) && vars->next->id_fork.fork != state)
-	{
-		vars->next->id_fork.fork = state;
-	}
-	else if (vars->prev->id_fork.fork != state)
-	{
-		vars->prev->id_fork.fork = state;
-	}
-	vars->id_fork.fork = state;
-	printf("DESPUES philo %d is eating\n", vars->id_fork.fork);
-	pthread_mutex_unlock(&(vars->mutex.fork));
+	// printf("ANTES philo %d is eating\n", vars->id_fork.fork);
+	pthread_mutex_lock(&(vars->next->mutex.eat));
+	vars->next->id_fork.fork = state;
+	pthread_mutex_unlock(&(vars->next->mutex.eat));
+
+	pthread_mutex_lock(&(vars->prev->mutex.eat));
+	vars->prev->id_fork.fork = state;
+	pthread_mutex_unlock(&(vars->prev->mutex.eat));
+	// printf("DESPUES philo %d is eating\n", vars->id_fork.fork);
 
 }
 
 void	eating(t_2link_circ_list *vars)
 {
-
+	pthread_mutex_lock(&(vars->next->mutex.eat));
 	change_fork_value(vars, 1);
 	//u sleep
 	change_fork_value(vars, 0);
 	pthread_mutex_lock(&(vars->mutex.print));
 	printf("philo %d is eating\n", vars->id_fork.id);
 	pthread_mutex_unlock(&(vars->mutex.print));
+	pthread_mutex_unlock(&(vars->mutex.eat));
 }
 
 void	sleeping(t_2link_circ_list *vars)
@@ -49,6 +46,10 @@ void	*f_hilo(void *args)
 	t_2link_circ_list	*vars;
 
 	vars = (t_2link_circ_list *) args;
+	pthread_mutex_lock(&(vars->next->mutex.id));
+	if (is_par(vars->id_fork.id))
+		usleep(100);
+	pthread_mutex_unlock(&(vars->next->mutex.id));
 	eating(vars);
 	thinking(vars);
 	sleeping(vars);

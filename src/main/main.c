@@ -96,6 +96,10 @@ int	main(int argc, char **argv)
 		return (clear_philo(&list, &id_threads), perror(""), 1);
 	if (pthread_mutex_init(&(list->mutex.print), NULL))
 		return (clear_philo(&list, &id_threads), perror(""), 1);
+	if (pthread_mutex_init(&(list->mutex.id), NULL))
+		return (clear_philo(&list, &id_threads), perror(""), 1);
+	if (pthread_mutex_init(&(list->mutex.eat), NULL))
+		return (clear_philo(&list, &id_threads), perror(""), 1);
 	if (create_threads(num_threads, list, id_threads))
 	{
 		pthread_mutex_destroy(&(list->mutex.fork));
@@ -104,6 +108,8 @@ int	main(int argc, char **argv)
 	}
 	pthread_mutex_destroy(&(list->mutex.fork));
 	pthread_mutex_destroy(&(list->mutex.print));
+	pthread_mutex_destroy(&(list->mutex.id));
+	pthread_mutex_destroy(&(list->mutex.eat));
 
 	clear_philo(&list, &id_threads);
 	return (0);
