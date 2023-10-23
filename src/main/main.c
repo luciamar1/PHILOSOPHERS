@@ -92,9 +92,19 @@ int	main(int argc, char **argv)
 	id_threads = malloc(sizeof(pthread_t) * num_threads);
 	if (!id_threads)
 		return (clear_philo(&list, &id_threads), perror(""), 1);
+	if (pthread_mutex_init(&(list->mutex.fork), NULL))
+		return (clear_philo(&list, &id_threads), perror(""), 1);
+	if (pthread_mutex_init(&(list->mutex.print), NULL))
+		return (clear_philo(&list, &id_threads), perror(""), 1);
 	if (create_threads(num_threads, list, id_threads))
+	{
+		pthread_mutex_destroy(&(list->mutex.fork));
+		pthread_mutex_destroy(&(list->mutex.print));
 		return (clear_philo(&list, &id_threads), 1);
+	}
+	pthread_mutex_destroy(&(list->mutex.fork));
 	pthread_mutex_destroy(&(list->mutex.print));
+
 	clear_philo(&list, &id_threads);
 	return (0);
 }

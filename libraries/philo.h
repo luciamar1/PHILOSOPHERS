@@ -10,7 +10,11 @@
 
 typedef struct s_mutex
 {
+	pthread_mutex_t	fork;
 	pthread_mutex_t	print;
+	pthread_mutex_t	f_hilo;
+	pthread_mutex_t	init;
+
 }t_mutex;
 
 typedef struct	s_dictionary
@@ -42,6 +46,8 @@ typedef struct s_2link_circ_list
 int	ft_arr_isdigit(char *arr);
 int	ft_atoi_chetao(const char *str, int *error);
 t_dictionary	create_dict_int(int id);
+int	is_par(int num);
+void change_fork_value(t_2link_circ_list *vars, int state);
 
 //     utils  2linked circle list
 int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_philo_routine routine);

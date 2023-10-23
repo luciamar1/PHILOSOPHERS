@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:44:46 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/17 16:46:42 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/10/20 16:29:46 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@ t_dictionary	create_dict_int(int id)
 	dictionary.id = id;
 	dictionary.fork = 0;
 	return (dictionary);
+}
+
+int	is_par(int num)
+{
+	if (num % 2)
+		return (1);
+	else
+		return (0);
 }
 
 int	ft_arr_isdigit(char *arr)
