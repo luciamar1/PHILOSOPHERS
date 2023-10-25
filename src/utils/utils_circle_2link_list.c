@@ -6,12 +6,11 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/17 16:03:25 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/10/25 16:51:53 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
 
 int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_philo_routine routine)
 {
@@ -26,6 +25,13 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_phil
 	}
 	new->id_fork = id_fork;
 	new->routine = routine;
+	if (mutex_init(new))
+	{
+		if (*head)
+			clear_2link_circ_list(head);
+		return(1);
+	}
+	
 	if (!*head)
 	{
 		new->prev = new;

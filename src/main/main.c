@@ -1,5 +1,13 @@
 #include "philo.h"
 
+void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
+{
+	if (*vars)
+		clear_2link_circ_list(vars);
+	if (*id_threads)
+		free(*id_threads);
+}
+
 int	verify_args(int argc, char **argv)
 {
 	if (argc != 4 && argc != 5)
@@ -60,16 +68,9 @@ t_2link_circ_list	*create_list_philo(int argc, char **argv)
 			return (perror("create_list_philo: "), NULL);
 		n_philo --;
 		counter ++;
+		printf_dlist_ind(lista);
 	}
 	return (lista);
-}
-
-void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
-{
-	if (*vars)
-		clear_2link_circ_list(vars);
-	if (*id_threads)
-		free(*id_threads);
 }
 
 int	main(int argc, char **argv)
@@ -79,10 +80,9 @@ int	main(int argc, char **argv)
 	int					num_threads;
 	int					err;
 
-	argv ++;
-	if (verify_args(argc - 1, (argv)))
+	if (verify_args(--argc, ++argv))
 		return (1);
-	list = create_list_philo(argc - 1, argv);
+	list = create_list_philo(argc, argv);
 	if (!list)
 		printf("NO HAY LISTA\n");
 	err = 0;
@@ -92,25 +92,12 @@ int	main(int argc, char **argv)
 	id_threads = malloc(sizeof(pthread_t) * num_threads);
 	if (!id_threads)
 		return (clear_philo(&list, &id_threads), perror(""), 1);
-	if (pthread_mutex_init(&(list->mutex.fork), NULL))
-		return (clear_philo(&list, &id_threads), perror(""), 1);
-	if (pthread_mutex_init(&(list->mutex.print), NULL))
-		return (clear_philo(&list, &id_threads), perror(""), 1);
-	if (pthread_mutex_init(&(list->mutex.id), NULL))
-		return (clear_philo(&list, &id_threads), perror(""), 1);
-	if (pthread_mutex_init(&(list->mutex.eat), NULL))
-		return (clear_philo(&list, &id_threads), perror(""), 1);
 	if (create_threads(num_threads, list, id_threads))
 	{
-		pthread_mutex_destroy(&(list->mutex.fork));
-		pthread_mutex_destroy(&(list->mutex.print));
+		mutex_destroy(list);
 		return (clear_philo(&list, &id_threads), 1);
 	}
-	pthread_mutex_destroy(&(list->mutex.fork));
-	pthread_mutex_destroy(&(list->mutex.print));
-	pthread_mutex_destroy(&(list->mutex.id));
-	pthread_mutex_destroy(&(list->mutex.eat));
-
+	mutex_destroy(list);
 	clear_philo(&list, &id_threads);
 	return (0);
 }

@@ -48,7 +48,7 @@ int	ft_arr_isdigit(char *arr);
 int	ft_atoi_chetao(const char *str, int *error);
 t_dictionary	create_dict_int(int id);
 int	is_par(int num);
-void change_fork_value(t_2link_circ_list *vars, int state);
+void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads);
 
 //     utils  2linked circle list
 int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_philo_routine routine);
@@ -57,8 +57,18 @@ int		len_dlist(t_2link_circ_list *stack);
 void	printf_dlist_ind(t_2link_circ_list *list);
 int		clear_2link_circ_list(t_2link_circ_list **list);
 
-//      threads_control
+//      threads_create
 void	*f_hilo(void *args);
 int		create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads);
+
+//      threads_utils
+int		mutex_init(t_2link_circ_list *list);
+void	mutex_destroy(t_2link_circ_list *list);
+
+//		threads_control
+void	eating(t_2link_circ_list *vars);
+void	sleeping(t_2link_circ_list *vars);
+void	thinking(t_2link_circ_list *vars);
+
 
 #endif

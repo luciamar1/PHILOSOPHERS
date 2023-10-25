@@ -6,6 +6,8 @@ SRCS := src/main/main.c		\
 		src/utils/utils.c	\
 		src/utils/utils_circle_2link_list.c \
 		src/threads/threads_control.c	\
+		src/threads/threads_create.c	\
+		src/threads/threads_utils.c	\
 
 # Archivos objeto
 OBJS := $(SRCS:src/%.c=objs/%.o)
