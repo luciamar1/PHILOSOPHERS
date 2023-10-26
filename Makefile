@@ -4,6 +4,7 @@ NAME := philo
 # Archivos fuente principales
 SRCS := src/main/main.c		\
 		src/utils/utils.c	\
+		src/utils/utils2.c	\
 		src/utils/utils_circle_2link_list.c \
 		src/threads/threads_control.c	\
 		src/threads/threads_create.c	\

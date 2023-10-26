@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/25 16:51:53 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/10/26 17:31:17 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_phil
 	t_2link_circ_list	*new;
 
 	new = malloc(sizeof(t_2link_circ_list));
-	if (!new)
+	if (!new || mutex_init(new))
 	{
 		if (*head)
 			clear_2link_circ_list(head);
@@ -25,13 +25,8 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_phil
 	}
 	new->id_fork = id_fork;
 	new->routine = routine;
-	if (mutex_init(new))
-	{
-		if (*head)
-			clear_2link_circ_list(head);
-		return(1);
-	}
-	
+	new->threads_ended = 0;
+	new->im_dead = 0;
 	if (!*head)
 	{
 		new->prev = new;
@@ -58,19 +53,15 @@ void	printf_fork_2link_circ_list(t_2link_circ_list *list)
 	list = list->next;
 	while (list != head)
 	{
-		// printf("que?\n");
-		if(list->id_fork.fork)
+		if (list->id_fork.fork)
 			printf("id_fork list == %d\n", list->id_fork.fork);
-		// printf("aaaaaaa\n");
-		// printf("aaaaa%d\n", list->id_fork != head->id_fork);
-		// printf("next == %p\n", list->next);
 		list = list->next;
 	}
 }
 
 int	len_dlist(t_2link_circ_list *stack)
 {
-	int		len;
+	int					len;
 	t_2link_circ_list	*init;
 
 	if (!stack)
@@ -89,12 +80,9 @@ int	len_dlist(t_2link_circ_list *stack)
 void	printf_dlist_ind(t_2link_circ_list *list)
 {
 	t_2link_circ_list	*start;
+
 	if (!list)
-	{
-		//se mete
-		printf("se mete\n");
 		return ;
-	}
 	start = list;
 	printf("ind list == %d\n", (int) list->id_fork.id);
 	if (list->next)

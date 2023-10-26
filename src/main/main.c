@@ -27,11 +27,12 @@ int	verify_args(int argc, char **argv)
 	return (0);
 }
 
-int	create_routine_struct(int argc, char **argv, t_philo_routine *routine)
+int	create_routine_struct(int argc, char **argv, t_philo_routine *routine, int n_philos)
 {
 	int				err;
 
 	err = 0;
+	(*routine).n_philos = n_philos;
 	(*routine).time_to_die = ft_atoi_chetao(argv[1], &err);
 	if (err)
 		return (1);
@@ -43,6 +44,8 @@ int	create_routine_struct(int argc, char **argv, t_philo_routine *routine)
 		return (1);
 	if (argc == 5)
 		(*routine).number_of_times = ft_atoi_chetao(argv[4], &err);
+	else 
+		(*routine).number_of_times = 0;
 	return (0);
 }
 
@@ -59,7 +62,7 @@ t_2link_circ_list	*create_list_philo(int argc, char **argv)
 	n_philo = ft_atoi_chetao(argv[0], &err);
 	if (err)
 		return (NULL);
-	if (create_routine_struct(argc, argv, &routine))
+	if (create_routine_struct(argc, argv, &routine, n_philo))
 		return (NULL);
 	counter = 0;
 	while (n_philo)
@@ -68,7 +71,6 @@ t_2link_circ_list	*create_list_philo(int argc, char **argv)
 			return (perror("create_list_philo: "), NULL);
 		n_philo --;
 		counter ++;
-		printf_dlist_ind(lista);
 	}
 	return (lista);
 }

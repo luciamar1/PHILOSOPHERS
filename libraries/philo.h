@@ -8,9 +8,21 @@
 #include <pthread.h>
 #include <sys/time.h>
 
+// COLORS
+# define RED	"\033[31m"
+# define GREEN	"\033[32m"
+# define YELLOW	"\033[33m"
+# define BLUE	"\033[34m"
+# define PINK	"\033[35m"
+# define CYAN	"\033[36m"
+# define WHITE	"\033[37m"
+# define FN		"\033[0m"
+
 typedef struct s_mutex
 {
 	pthread_mutex_t	fork;
+	pthread_mutex_t	threads_ended;
+	pthread_mutex_t	im_dead;
 	pthread_mutex_t	print;
 	pthread_mutex_t	id;
 	pthread_mutex_t	eat;
@@ -24,19 +36,31 @@ typedef struct	s_dictionary
 	int	fork;
 }	t_dictionary;
 
+
 typedef struct s_philo_routine
 {
 	int					time_to_die;
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					number_of_times;
+	int					n_philos;
 }	t_philo_routine;
+
+//[3000ms] 2 is thinking
 
 typedef struct s_2link_circ_list
 {
+
+	int							threads_ended;
+	int							im_dead;
 	t_dictionary				id_fork;
 	t_philo_routine				routine;
 	t_mutex						mutex;
+	struct timeval				start_eating;
+	struct timeval				born_philo;
+	struct timeval				t_eat;
+	struct timeval				t_think;
+	struct timeval				t_sleep;
 	struct s_2link_circ_list	*next;
 	struct s_2link_circ_list	*prev;
 }	t_2link_circ_list;
@@ -49,6 +73,10 @@ int	ft_atoi_chetao(const char *str, int *error);
 t_dictionary	create_dict_int(int id);
 int	is_par(int num);
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads);
+void	ft_miguel_usleep(long long useconds);
+void	ft_usleep(long long useconds);
+
+
 
 //     utils  2linked circle list
 int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_philo_routine routine);
