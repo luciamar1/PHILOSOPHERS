@@ -20,10 +20,18 @@ int	mutex_init(t_2link_circ_list *list)
 
 void	mutex_destroy(t_2link_circ_list *list)
 {
-	pthread_mutex_destroy(&(list->mutex.fork));
-	pthread_mutex_destroy(&(list->mutex.im_dead));
-	pthread_mutex_destroy(&(list->mutex.print));
-	pthread_mutex_destroy(&(list->mutex.id));
-	pthread_mutex_destroy(&(list->mutex.eat));
-	pthread_mutex_destroy(&(list->mutex.threads_ended));
+	int num;
+
+	num = list->routine.n_philos;
+	while (num)
+	{
+		pthread_mutex_destroy(&(list->mutex.fork));
+		pthread_mutex_destroy(&(list->mutex.im_dead));
+		pthread_mutex_destroy(&(list->mutex.print));
+		pthread_mutex_destroy(&(list->mutex.id));
+		pthread_mutex_destroy(&(list->mutex.eat));
+		pthread_mutex_destroy(&(list->mutex.threads_ended));
+		list = list->next;
+		num --;
+	}
 }
