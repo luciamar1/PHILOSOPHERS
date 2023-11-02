@@ -50,7 +50,7 @@ typedef struct s_philo_routine
 
 typedef struct s_2link_circ_list
 {
-
+	int							*dead;
 	int							threads_ended;
 	int							im_dead;
 	t_dictionary				id_fork;
@@ -74,12 +74,12 @@ t_dictionary	create_dict_int(int id);
 int	is_par(int num);
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads);
 void	ft_miguel_usleep(long long useconds);
-void	ft_usleep(long long useconds);
+int	ft_usleep(long long useconds, t_2link_circ_list *philo);
 
 
 
 //     utils  2linked circle list
-int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_philo_routine routine);
+int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_philo_routine routine, int *dead);
 void	printf_fork_2link_circ_list(t_2link_circ_list *list);
 int		len_dlist(t_2link_circ_list *stack);
 void	printf_dlist_ind(t_2link_circ_list *list);
@@ -92,10 +92,12 @@ int		create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads);
 //      threads_utils
 int		mutex_init(t_2link_circ_list *list);
 void	mutex_destroy(t_2link_circ_list *list);
+int	im_dead_(t_2link_circ_list *vars);
+
 
 //		threads_control
-void	eating(t_2link_circ_list *vars);
-void	sleeping(t_2link_circ_list *vars);
+int	eating(t_2link_circ_list *vars);
+int	sleeping(t_2link_circ_list *vars);
 void	thinking(t_2link_circ_list *vars);
 
 

@@ -56,7 +56,9 @@ t_2link_circ_list	*create_list_philo(int argc, char **argv)
 	int					counter;
 	int					n_philo;
 	t_philo_routine		routine;
+	int					dead;
 
+	dead = 0;
 	lista = NULL;
 	err = 0;
 	n_philo = ft_atoi_chetao(argv[0], &err);
@@ -67,7 +69,7 @@ t_2link_circ_list	*create_list_philo(int argc, char **argv)
 	counter = 0;
 	while (n_philo)
 	{
-		if (create_2link_circlist(&lista, create_dict_int(counter), routine))
+		if (create_2link_circlist(&lista, create_dict_int(counter), routine, &dead))
 			return (perror("create_list_philo: "), NULL);
 		n_philo --;
 		counter ++;

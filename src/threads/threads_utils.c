@@ -15,12 +15,11 @@ int	mutex_init(t_2link_circ_list *list)
 	if (pthread_mutex_init(&(list->mutex.im_dead), NULL))
 		return (clear_philo(&list, NULL), perror(""), 1);
 	return (0);
-	
 }
 
 void	mutex_destroy(t_2link_circ_list *list)
 {
-	int num;
+	int	num;
 
 	num = list->routine.n_philos;
 	while (num)

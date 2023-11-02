@@ -6,13 +6,14 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/26 17:31:17 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/11/02 14:49:18 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_philo_routine routine)
+int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
+	t_philo_routine routine, int *dead)
 {
 	t_2link_circ_list	*new;
 
@@ -23,15 +24,12 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_phil
 			clear_2link_circ_list(head);
 		return (1);
 	}
+	new->dead = dead;
 	new->id_fork = id_fork;
 	new->routine = routine;
 	new->threads_ended = 0;
-	new->im_dead = 0;
 	if (!*head)
-	{
-		new->prev = new;
-		new->next = new;
-	}
+		new->next = (new->prev = new, new);
 	else
 	{
 		new->next = *head;
