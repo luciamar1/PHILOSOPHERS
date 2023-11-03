@@ -92,8 +92,7 @@ int		create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads);
 //      threads_utils
 int		mutex_init(t_2link_circ_list *list);
 void	mutex_destroy(t_2link_circ_list *list);
-int	im_dead_(t_2link_circ_list *vars);
-
+int	im_dead_(t_2link_circ_list *vars, int dead);
 
 //		threads_control
 int	eating(t_2link_circ_list *vars);

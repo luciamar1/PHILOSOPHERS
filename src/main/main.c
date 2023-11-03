@@ -2,6 +2,7 @@
 
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
 {
+	free((*vars)->dead);
 	if (*vars)
 		clear_2link_circ_list(vars);
 	if (*id_threads)
@@ -49,32 +50,33 @@ int	create_routine_struct(int argc, char **argv, t_philo_routine *routine, int n
 	return (0);
 }
 
-t_2link_circ_list	*create_list_philo(int argc, char **argv)
+int create_list_philo(int argc, char **argv, t_2link_circ_list **lista)
 {
-	t_2link_circ_list	*lista;
 	int					err;
 	int					counter;
 	int					n_philo;
 	t_philo_routine		routine;
-	int					dead;
+	int					*dead;
 
-	dead = 0;
-	lista = NULL;
+	dead = malloc(4);
+	if (!dead)
+		return 1;
+	*dead = 0;
 	err = 0;
 	n_philo = ft_atoi_chetao(argv[0], &err);
 	if (err)
-		return (NULL);
+		return (1);
 	if (create_routine_struct(argc, argv, &routine, n_philo))
-		return (NULL);
+		return (1);
 	counter = 0;
 	while (n_philo)
 	{
-		if (create_2link_circlist(&lista, create_dict_int(counter), routine, &dead))
-			return (perror("create_list_philo: "), NULL);
+		if (create_2link_circlist(lista, create_dict_int(counter), routine, dead))
+			return (perror("create_list_philo: "), 1);
 		n_philo --;
 		counter ++;
 	}
-	return (lista);
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -86,7 +88,17 @@ int	main(int argc, char **argv)
 
 	if (verify_args(--argc, ++argv))
 		return (1);
-	list = create_list_philo(argc, argv);
+	if (create_list_philo(argc, argv, &list))
+		return (1);
+
+	// int i = 0;
+	// list->dead = &i;
+	// printf("bbbbb == %d\n", (int)(*(list->dead)));
+	
+	// printf_dlist_ind(list);
+	// printf("aaaaa == %p\n", list->dead);
+	// printf("aaaaa == %p\n", list->next->dead);
+	// 	sleep(5);
 	if (!list)
 		printf("NO HAY LISTA\n");
 	err = 0;

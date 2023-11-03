@@ -1,11 +1,10 @@
 #include "philo.h"
 
-int	im_dead_(t_2link_circ_list *vars)
+int	im_dead_(t_2link_circ_list *vars, int dead)
 {
 	pthread_mutex_lock(&(vars->mutex.im_dead));
-	if (*(vars->dead) == 1)
+	if (dead == 1)
 	{
-		printf("IM DEAD = %d\n", vars->id_fork.id);
 		//sleep(5);
 		pthread_mutex_unlock(&(vars->mutex.im_dead));
 		return (1);
@@ -19,14 +18,15 @@ int	actions(t_2link_circ_list *vars)
 	gettimeofday(&(vars->start_eating), NULL);
 	if (eating(vars))
 		return (1);
-	if (im_dead_(vars))
+	sleep(5);
+	if (im_dead_(vars, *(vars->dead)))
 		return (1);
 	thinking(vars);
-	if (im_dead_(vars))
+	if (im_dead_(vars, *(vars->dead)))
 		return (1);
 	if (sleeping(vars))
 		return (1);
-	if (im_dead_(vars))
+	if (im_dead_(vars, *(vars->dead)))
 		return (1);
 	else
 		return (0);
@@ -66,6 +66,8 @@ void	*f_hilo(void *args)
 	vars = (t_2link_circ_list *) args;
 	gettimeofday(&(vars->born_philo), NULL);
 	gettimeofday(&(vars->start_eating), NULL);
+	if (im_dead_(vars, *(vars->dead)))
+		return (NULL);
 	pthread_mutex_lock(&(vars->next->mutex.id));
 	if (is_par(vars->id_fork.id))
 		ft_usleep(200, vars);
@@ -120,10 +122,8 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 		gettimeofday(&end, NULL);
 		time_elapsed = ((end.tv_sec - vars->start_eating.tv_sec) * 1000) + \
 			((end.tv_usec - vars->start_eating.tv_usec) / 1000);
-		printf("muerte == %d   tiempo transcurrido == %ld - %ld = %lld\n", vars->routine.time_to_die, end.tv_sec*1000 + end.tv_usec/1000, vars->start_eating.tv_sec*1000 + vars->start_eating.tv_usec/1000,   time_elapsed);
 		if ((long long) vars->routine.time_to_die < time_elapsed)
 		{
-			printf("IM DEAD\n");
 			sleep(1);
 			// kill_all(vars);
 			pthread_mutex_lock(&(vars->mutex.im_dead));
@@ -150,6 +150,7 @@ int	create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads)
 	aux = n_threads;
 	while (aux)
 	{
+		
 		if (pthread_create(&threads[counter], NULL, f_hilo, vars))
 			return (perror("pthread_create fail\n"), 1);
 		vars = vars->next;

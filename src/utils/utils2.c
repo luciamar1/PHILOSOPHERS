@@ -14,7 +14,7 @@ int	ft_usleep(long long useconds, t_2link_circ_list *philo)
 	while (curr_time_u - start_time_u < useconds)
 	{
 		usleep(500);
-		if (im_dead_(philo))
+		if (im_dead_(philo, *(philo->dead)))
 			return (1);
 		gettimeofday(&curr_time, NULL);
 		curr_time_u = curr_time.tv_sec * 1000000 + curr_time.tv_usec;
