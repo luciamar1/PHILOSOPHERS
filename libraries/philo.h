@@ -70,7 +70,7 @@ typedef struct s_2link_circ_list
 int	ft_arr_isdigit(char *arr);
 int	ft_atoi_chetao(const char *str, int *error);
 t_dictionary	create_dict_int(int id);
-int	is_par(int num);
+int	is_impar(int num);
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads);
 void	ft_miguel_usleep(long long useconds);
 int	ft_usleep(long long useconds, t_2link_circ_list *philo);

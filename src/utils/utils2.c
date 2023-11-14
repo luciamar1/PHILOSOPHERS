@@ -36,7 +36,6 @@ void	ft_usleep_lucia(long long useconds, t_2link_circ_list *philo)
 	counter = useconds;
 	while (counter --)
 	{
-		gettimeofday(&curr_time, NULL);
 		usleep(1);
 		gettimeofday(&curr_time, NULL);
 	}

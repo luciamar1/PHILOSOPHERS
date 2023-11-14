@@ -67,19 +67,18 @@ void	*f_hilo(void *args)
 
 	vars = (t_2link_circ_list *) args;
 
-	// pthread_mutex_lock(&(vars->next->mutex.id));
-	// if (is_par(vars->id_fork.id))
-	// {
-
-	// 	printf("%d\n", vars->id_fork.id);
-	// 	ft_usleep(20, vars);
-	// }
-	// pthread_mutex_unlock(&(vars->next->mutex.id));
+	pthread_mutex_lock(&(vars->next->mutex.id));
+	if (is_impar(vars->id_fork.id))
+	{
+		ft_usleep(20, vars);
+	}
+	pthread_mutex_unlock(&(vars->next->mutex.id));
 
 	pthread_mutex_lock(&(vars->mutex.t_born_philo));
 	gettimeofday(&(vars->born_philo), NULL);
 	pthread_mutex_unlock(&(vars->mutex.t_born_philo));
 	
+
 	pthread_mutex_lock(&(vars->mutex.t_start_eating));
 	gettimeofday(&(vars->start_eating), NULL);
 	pthread_mutex_unlock(&(vars->mutex.t_start_eating));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:44:46 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/20 16:29:46 by root             ###   ########.fr       */
+/*   Updated: 2023/11/14 20:05:06 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_dictionary	create_dict_int(int id)
 	return (dictionary);
 }
 
-int	is_par(int num)
+int	is_impar(int num)
 {
 	if (num % 2)
 		return (1);
