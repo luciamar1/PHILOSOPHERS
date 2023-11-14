@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/03 19:01:32 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/11/14 13:13:59 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,16 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
 			clear_2link_circ_list(head);
 		return (1);
 	}
+	if (!*head)
+	{
+		if (pthread_mutex_init((new->mutex_im_dead), NULL))
+			return (clear_philo(&new, NULL), perror(""), 1);
+	}
 	new->dead = dead;
 	new->id_fork = id_fork;
 	new->routine = routine;
 	new->threads_ended = 0;
+	new->mutex_im_dead = new->mutex_im_dead;
 	if (!*head)
 		new->next = (new->prev = new, new);
 	else

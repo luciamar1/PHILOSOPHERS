@@ -22,7 +22,6 @@ typedef struct s_mutex
 {
 	pthread_mutex_t	fork;
 	pthread_mutex_t	threads_ended;
-	pthread_mutex_t	im_dead;
 	pthread_mutex_t	print;
 	pthread_mutex_t	id;
 	pthread_mutex_t	eat;
@@ -50,6 +49,7 @@ typedef struct s_philo_routine
 
 typedef struct s_2link_circ_list
 {
+	pthread_mutex_t				*mutex_im_dead;
 	int							*dead;
 	int							threads_ended;
 	int							im_dead;

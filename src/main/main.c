@@ -2,6 +2,7 @@
 
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
 {
+	pthread_mutex_destroy((*vars)->mutex_im_dead);
 	free((*vars)->dead);
 	if (*vars)
 		clear_2link_circ_list(vars);

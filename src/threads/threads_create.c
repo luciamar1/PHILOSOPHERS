@@ -2,14 +2,14 @@
 
 int	im_dead_(t_2link_circ_list *vars, int dead)
 {
-	pthread_mutex_lock(&(vars->mutex.im_dead));
+	pthread_mutex_lock((vars->mutex_im_dead));
 	if (dead == 1)
 	{
 		//sleep(5);
-		pthread_mutex_unlock(&(vars->mutex.im_dead));
+		pthread_mutex_unlock((vars->mutex_im_dead));
 		return (1);
 	}
-	pthread_mutex_unlock(&(vars->mutex.im_dead));
+	pthread_mutex_unlock((vars->mutex_im_dead));
 	return (0);
 }
 
@@ -104,9 +104,9 @@ int	check_if_finish(t_2link_circ_list *vars)
 // 	number_philos = vars->routine.n_philos;
 // 	while (number_philos)
 // 	{
-// 		pthread_mutex_lock(&(vars->mutex.im_dead));
+// 		pthread_mutex_lock(&(vars->mutex_im_dead));
 // 		vars->im_dead = 1;
-// 		pthread_mutex_unlock(&(vars->mutex.im_dead));
+// 		pthread_mutex_unlock(&(vars->mutex_im_dead));
 // 		vars = vars->next;
 // 		number_philos--;
 // 	}
@@ -124,12 +124,12 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 			((end.tv_usec - vars->start_eating.tv_usec) / 1000);
 		if ((long long) vars->routine.time_to_die < time_elapsed)
 		{
-			sleep(1);
+			//sleep(1);
 			// kill_all(vars);
-			pthread_mutex_lock(&(vars->mutex.im_dead));
+			pthread_mutex_lock((vars->mutex_im_dead));
 			if (*(vars->dead) == 0)
 				*(vars->dead) = 1;
-			pthread_mutex_unlock(&(vars->mutex.im_dead));
+			pthread_mutex_unlock((vars->mutex_im_dead));
 			break ;
 		}
 		if (check_if_finish(vars))
