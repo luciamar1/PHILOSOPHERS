@@ -26,6 +26,8 @@ typedef struct s_mutex
 	pthread_mutex_t	id;
 	pthread_mutex_t	eat;
 	pthread_mutex_t	init;
+	pthread_mutex_t	t_start_eating;
+	pthread_mutex_t	t_born_philo;
 
 }t_mutex;
 
@@ -58,9 +60,6 @@ typedef struct s_2link_circ_list
 	t_mutex						mutex;
 	struct timeval				start_eating;
 	struct timeval				born_philo;
-	struct timeval				t_eat;
-	struct timeval				t_think;
-	struct timeval				t_sleep;
 	struct s_2link_circ_list	*next;
 	struct s_2link_circ_list	*prev;
 }	t_2link_circ_list;
@@ -92,7 +91,7 @@ int		create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads);
 //      threads_utils
 int		mutex_init(t_2link_circ_list *list);
 void	mutex_destroy(t_2link_circ_list *list);
-int	im_dead_(t_2link_circ_list *vars, int dead);
+int	im_dead_(t_2link_circ_list *vars);
 
 //		threads_control
 int	eating(t_2link_circ_list *vars);
