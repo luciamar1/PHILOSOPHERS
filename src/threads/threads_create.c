@@ -16,6 +16,7 @@ int	im_dead_(t_2link_circ_list *vars)
 
 int	actions(t_2link_circ_list *vars)
 {
+	//printf("actions impar? == %d\n", vars->id_fork.id);
 	pthread_mutex_lock(&(vars->mutex.t_start_eating));
 	gettimeofday(&(vars->start_eating), NULL);
 	pthread_mutex_unlock(&(vars->mutex.t_start_eating));
@@ -70,10 +71,9 @@ void	*f_hilo(void *args)
 	pthread_mutex_lock(&(vars->next->mutex.id));
 	if (is_impar(vars->id_fork.id))
 	{
-		ft_usleep(20, vars);
+		ft_usleep(200, vars);
 	}
 	pthread_mutex_unlock(&(vars->next->mutex.id));
-
 	pthread_mutex_lock(&(vars->mutex.t_born_philo));
 	gettimeofday(&(vars->born_philo), NULL);
 	pthread_mutex_unlock(&(vars->mutex.t_born_philo));
@@ -83,8 +83,8 @@ void	*f_hilo(void *args)
 	gettimeofday(&(vars->start_eating), NULL);
 	pthread_mutex_unlock(&(vars->mutex.t_start_eating));
 	
-	if (im_dead_(vars))
-		return (NULL);
+	// if (im_dead_(vars))
+	// 	return (NULL);
 	
 	
 	number_actions(vars);
@@ -143,6 +143,7 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 		{
 			//sleep(1);
 			// kill_all(vars);
+			printf("calculate impar? == %d\n", vars->id_fork.id);
 			pthread_mutex_lock((vars->mutex_im_dead));
 			if (*(vars->dead) == 0)
 				*(vars->dead) = 1;
