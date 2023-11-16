@@ -6,14 +6,14 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/14 19:15:36 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/11/16 20:05:22 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
-	t_philo_routine routine, int *dead)
+	t_philo_routine routine, int *dead, int *arriving_philos)
 {
 	t_2link_circ_list	*new;
 
@@ -29,12 +29,21 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
 		new->mutex_im_dead = malloc(sizeof(pthread_mutex_t));
 		if (!new->mutex_im_dead)
 			return (clear_philo(&new, NULL), perror(""), 1);
+		new->mutex_im_arriving = malloc(sizeof(pthread_mutex_t));
+		if (!new->mutex_im_arriving)
+			return (clear_philo(&new, NULL), perror(""), 1);
 		if (pthread_mutex_init((new->mutex_im_dead), NULL))
+			return (clear_philo(&new, NULL), perror(""), 1);
+		if (pthread_mutex_init((new->mutex_im_arriving), NULL))
 			return (clear_philo(&new, NULL), perror(""), 1);
 	}
 	else
+	{
 		new->mutex_im_dead = (*head)->mutex_im_dead;
+		new->mutex_im_arriving = (*head)->mutex_im_arriving;
+	}
 	new->dead = dead;
+	new->arriving_philos = arriving_philos;
 	new->id_fork = id_fork;
 	new->routine = routine;
 	new->threads_ended = 0;

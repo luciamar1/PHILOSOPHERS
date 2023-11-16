@@ -3,7 +3,9 @@
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
 {
 	pthread_mutex_destroy((*vars)->mutex_im_dead);
+	pthread_mutex_destroy((*vars)->mutex_im_arriving);
 	free((*vars)->dead);
+	free((*vars)->arriving_philos);
 	if (*vars)
 		clear_2link_circ_list(vars);
 	if (*id_threads)
@@ -58,11 +60,16 @@ int create_list_philo(int argc, char **argv, t_2link_circ_list **lista)
 	int					n_philo;
 	t_philo_routine		routine;
 	int					*dead;
+	int					*arriving_philos;
 
 	dead = malloc(4);
 	if (!dead)
 		return 1;
+	arriving_philos = malloc(4);
+	if (!arriving_philos)
+		return 1;
 	*dead = 0;
+	*arriving_philos = 1;
 	err = 0;
 	n_philo = ft_atoi_chetao(argv[0], &err);
 	if (err)
@@ -72,7 +79,7 @@ int create_list_philo(int argc, char **argv, t_2link_circ_list **lista)
 	counter = 0;
 	while (n_philo)
 	{
-		if (create_2link_circlist(lista, create_dict_int(counter), routine, dead))
+		if (create_2link_circlist(lista, create_dict_int(counter), routine, dead, arriving_philos))
 			return (perror("create_list_philo: "), 1);
 		n_philo --;
 		counter ++;

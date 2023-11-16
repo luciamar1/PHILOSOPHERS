@@ -6,11 +6,12 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 17:12:13 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/14 20:10:10 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/11/16 17:59:00 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
 
 void	change_fork_value(pthread_mutex_t	*mutex_fork, int *fork, int state)
 {
@@ -37,8 +38,11 @@ int	try_to_take_fork(pthread_mutex_t	*mutex_fork, int *fork)
 int	eating(t_2link_circ_list *vars)
 {
 	struct timeval				t_eat;
-	long int					eat;
+	long int					time_alive;
 
+	// pthread_mutex_lock(&(vars->mutex.t_start_eating));
+	// gettimeofday(&(vars->start_eating), NULL);
+	// pthread_mutex_unlock(&(vars->mutex.t_start_eating));
 	while (1)
 	{
 		if (try_to_take_fork(&(vars->next->mutex.fork), \
@@ -51,10 +55,10 @@ int	eating(t_2link_circ_list *vars)
 					return (1);
 				gettimeofday(&(t_eat), NULL);
 				pthread_mutex_lock(&(vars->mutex.t_born_philo));
-				eat = ((t_eat.tv_sec - vars->born_philo.tv_sec) * 1000 + (t_eat.tv_usec - vars->born_philo.tv_usec) / 1000);
+				time_alive = ((t_eat.tv_sec - vars->born_philo.tv_sec) * 1000 + (t_eat.tv_usec - vars->born_philo.tv_usec) / 1000);
 				pthread_mutex_unlock(&(vars->mutex.t_born_philo));
 				pthread_mutex_lock(&(vars->mutex.print));
-				printf("%s[%ld ms] %d is eating%s\n", BLUE, eat, vars->id_fork.id, FN);
+				printf("%s[%ld ms] %d is eating%s\n", BLUE, time_alive, vars->id_fork.id, FN);
 				pthread_mutex_unlock(&(vars->mutex.print));
 				change_fork_value(&(vars->next->mutex.fork), \
 					&(vars->next->id_fork.fork), 0);

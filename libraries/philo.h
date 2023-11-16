@@ -52,7 +52,9 @@ typedef struct s_philo_routine
 typedef struct s_2link_circ_list
 {
 	pthread_mutex_t				*mutex_im_dead;
+	pthread_mutex_t				*mutex_im_arriving;
 	int							*dead;
+	int							*arriving_philos;
 	int							threads_ended;
 	int							im_dead;
 	t_dictionary				id_fork;
@@ -78,7 +80,8 @@ int	ft_usleep(long long useconds, t_2link_circ_list *philo);
 
 
 //     utils  2linked circle list
-int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, t_philo_routine routine, int *dead);
+int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
+	t_philo_routine routine, int *dead, int *arriving_philos);
 void	printf_fork_2link_circ_list(t_2link_circ_list *list);
 int		len_dlist(t_2link_circ_list *stack);
 void	printf_dlist_ind(t_2link_circ_list *list);
