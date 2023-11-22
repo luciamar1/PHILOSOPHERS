@@ -3,9 +3,8 @@
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
 {
 	pthread_mutex_destroy((*vars)->mutex_im_dead);
-	pthread_mutex_destroy((*vars)->mutex_im_arriving);
 	free((*vars)->dead);
-	free((*vars)->arriving_philos);
+	
 	if (*vars)
 		clear_2link_circ_list(vars);
 	if (*id_threads)

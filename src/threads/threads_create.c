@@ -39,8 +39,7 @@ int	actions(t_2link_circ_list *vars)
 void	number_actions(t_2link_circ_list *vars)
 {
 	int	n_times;
-	
-	calculate_thread_death(vars);
+
 	if (vars->routine.number_of_times)
 	{
 		n_times = vars->routine.number_of_times;
@@ -72,23 +71,23 @@ void	*f_hilo(void *args)
 	//usleep(20000);
 	while (1)
 	{
-		pthread_mutex_lock(vars->mutex_im_arriving);
+		pthread_mutex_lock(&(vars->mutex.im_arriving));
 		if (!(*(vars->arriving_philos)))
 		{
-			pthread_mutex_unlock(vars->mutex_im_arriving);	
+			pthread_mutex_unlock(&(vars->mutex.im_arriving));	
 			break ;
 		}
-		pthread_mutex_unlock(vars->mutex_im_arriving);	
+		pthread_mutex_unlock(&(vars->mutex.im_arriving));	
 		//ft_usleep(10, vars);
 	}
+	pthread_mutex_lock(&(vars->mutex.t_start_eating));
+	gettimeofday(&(vars->start_eating), NULL);
+	pthread_mutex_unlock(&(vars->mutex.t_start_eating));
 	pthread_mutex_lock(&(vars->next->mutex.id));
 	if (is_impar(vars->id_fork.id))
 	{
 		ft_usleep(200, vars);
 	}
-	pthread_mutex_lock(&(vars->mutex.t_start_eating));
-	gettimeofday(&(vars->start_eating), NULL);
-	pthread_mutex_unlock(&(vars->mutex.t_start_eating));
 	pthread_mutex_unlock(&(vars->next->mutex.id));
 	pthread_mutex_lock(&(vars->mutex.t_born_philo));
 	gettimeofday(&(vars->born_philo), NULL);
@@ -165,6 +164,22 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 	}
 }
 
+void	wait_to_sit(t_2link_circ_list *vars)
+{
+	while (1)
+	{
+		//printf("aaa\n");
+		ft_usleep(10, vars);
+		pthread_mutex_lock(&(vars->mutex.im_arriving));
+		if (!(*(vars->arriving_philos)))
+		{
+			pthread_mutex_unlock(&(vars->mutex.im_arriving));	
+			break ;
+		}
+		pthread_mutex_unlock(&(vars->mutex.im_arriving));	
+	}
+}
+
 int	create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads)
 {
 	int					counter;
@@ -173,9 +188,9 @@ int	create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads)
 
 	counter = 0;
 	aux = n_threads;
-	pthread_mutex_lock(vars->mutex_im_arriving);
+	pthread_mutex_lock(&(vars->mutex.im_arriving));
 	*(vars->arriving_philos) = 1;
-	pthread_mutex_unlock(vars->mutex_im_arriving);
+	pthread_mutex_unlock(&(vars->mutex.im_arriving));
 	while (aux)
 	{
 		if (pthread_create(&threads[counter], NULL, f_hilo, vars))
@@ -184,11 +199,11 @@ int	create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads)
 		aux --;
 		counter ++;
 	}
-	pthread_mutex_lock(vars->mutex_im_arriving);
+	pthread_mutex_lock(&(vars->mutex.im_arriving));
 	*(vars->arriving_philos) = 0;
-	pthread_mutex_unlock(vars->mutex_im_arriving);
+	pthread_mutex_unlock(&(vars->mutex.im_arriving));
 	counter = 0;
-	while (!im_dead_(vars))
+	calculate_thread_death(vars);
 	while (n_threads)
 	{
 		espera = pthread_join(threads[counter], NULL);

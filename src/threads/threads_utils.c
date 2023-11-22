@@ -16,6 +16,8 @@ int	mutex_init(t_2link_circ_list *list)
 		return (clear_philo(&list, NULL), perror(""), 1);
 	if (pthread_mutex_init(&(list->mutex.t_born_philo), NULL))
 		return (clear_philo(&list, NULL), perror(""), 1);
+	if (pthread_mutex_init(&(list->mutex.im_arriving), NULL))
+		return (clear_philo(&list, NULL), perror(""), 1);
 	return (0);
 }
 
@@ -33,6 +35,7 @@ void	mutex_destroy(t_2link_circ_list *list)
 		pthread_mutex_destroy(&(list->mutex.threads_ended));
 		pthread_mutex_destroy(&(list->mutex.t_start_eating));
 		pthread_mutex_destroy(&(list->mutex.t_born_philo));
+		pthread_mutex_destroy(&(list->mutex.im_arriving));
 		list = list->next;
 		num --;
 	}
