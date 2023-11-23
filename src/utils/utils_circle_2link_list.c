@@ -13,11 +13,12 @@
 #include "philo.h"
 
 int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
-	t_philo_routine routine, int *dead, int *arriving_philos)
+	t_philo_routine routine, int *dead)
 {
 	t_2link_circ_list	*new;
 
 	new = malloc(sizeof(t_2link_circ_list));
+
 	if (!new || mutex_init(new))
 	{
 		if (*head)
@@ -37,7 +38,7 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
 		new->mutex_im_dead = (*head)->mutex_im_dead;
 	}
 	new->dead = dead;
-	new->arriving_philos = arriving_philos;
+	new->arriving_philos = 0;
 	new->id_fork = id_fork;
 	new->routine = routine;
 	new->threads_ended = 0;

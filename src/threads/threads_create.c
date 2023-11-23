@@ -40,6 +40,10 @@ void	number_actions(t_2link_circ_list *vars)
 {
 	int	n_times;
 
+	pthread_mutex_lock(&(vars->mutex.im_arriving));
+	vars->arriving_philos = 1;
+	pthread_mutex_unlock(&(vars->mutex.im_arriving));
+
 	if (vars->routine.number_of_times)
 	{
 		n_times = vars->routine.number_of_times;
@@ -69,17 +73,7 @@ void	*f_hilo(void *args)
 
 	vars = (t_2link_circ_list *) args;
 	//usleep(20000);
-	while (1)
-	{
-		pthread_mutex_lock(&(vars->mutex.im_arriving));
-		if (!(*(vars->arriving_philos)))
-		{
-			pthread_mutex_unlock(&(vars->mutex.im_arriving));	
-			break ;
-		}
-		pthread_mutex_unlock(&(vars->mutex.im_arriving));	
-		//ft_usleep(10, vars);
-	}
+	wait_to_sit(vars);
 	pthread_mutex_lock(&(vars->mutex.t_start_eating));
 	gettimeofday(&(vars->start_eating), NULL);
 	pthread_mutex_unlock(&(vars->mutex.t_start_eating));
@@ -166,17 +160,34 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 
 void	wait_to_sit(t_2link_circ_list *vars)
 {
+	int counter;
+	int	n_philos_sitting[vars->routine.n_philos];
+	int aux;
+
+	aux = 0;
+	counter = vars->routine.n_philos;
+	while (counter --)
+		n_philos_sitting[aux++] = 0;
 	while (1)
 	{
 		//printf("aaa\n");
 		ft_usleep(10, vars);
 		pthread_mutex_lock(&(vars->mutex.im_arriving));
-		if (!(*(vars->arriving_philos)))
-		{
-			pthread_mutex_unlock(&(vars->mutex.im_arriving));	
-			break ;
-		}
+		if (((vars->arriving_philos)))
+			n_philos_sitting[(vars->id_fork.id - 1)] --;
 		pthread_mutex_unlock(&(vars->mutex.im_arriving));	
+		counter = vars->routine.n_philos;
+		aux = 0;
+		while(counter )
+		{
+			if(n_philos_sitting[aux++] == 0)
+				break ;
+			counter --;
+		}
+		if (counter == 0)
+			break;
+		vars = vars->next;
+		
 	}
 }
 
@@ -188,9 +199,6 @@ int	create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads)
 
 	counter = 0;
 	aux = n_threads;
-	pthread_mutex_lock(&(vars->mutex.im_arriving));
-	*(vars->arriving_philos) = 1;
-	pthread_mutex_unlock(&(vars->mutex.im_arriving));
 	while (aux)
 	{
 		if (pthread_create(&threads[counter], NULL, f_hilo, vars))
@@ -199,9 +207,7 @@ int	create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads)
 		aux --;
 		counter ++;
 	}
-	pthread_mutex_lock(&(vars->mutex.im_arriving));
-	*(vars->arriving_philos) = 0;
-	pthread_mutex_unlock(&(vars->mutex.im_arriving));
+	wait_to_sit(vars);
 	counter = 0;
 	calculate_thread_death(vars);
 	while (n_threads)
