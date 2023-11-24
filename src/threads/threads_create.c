@@ -43,6 +43,7 @@ void	number_actions(t_2link_circ_list *vars)
 	pthread_mutex_lock(&(vars->mutex.im_arriving));
 	vars->arriving_philos = 1;
 	pthread_mutex_unlock(&(vars->mutex.im_arriving));
+	wait_to_sit(vars);
 
 	if (vars->routine.number_of_times)
 	{
@@ -73,7 +74,6 @@ void	*f_hilo(void *args)
 
 	vars = (t_2link_circ_list *) args;
 	//usleep(20000);
-	wait_to_sit(vars);
 	pthread_mutex_lock(&(vars->mutex.t_start_eating));
 	gettimeofday(&(vars->start_eating), NULL);
 	pthread_mutex_unlock(&(vars->mutex.t_start_eating));
@@ -130,6 +130,7 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 {
 	long long		time_elapsed;
 	struct timeval	end;
+	long int		time_that_philo_lived;
 
 	while (1)
 	{
@@ -143,11 +144,15 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 			//sleep(1);
 			// kill_all(vars);
 			//printf("calculate impar? == %d\n", vars->id_fork.id);
-			printf("guatafac %lld\n", time_elapsed);
+			//printf("tiempo start eating %lld\n", time_elapsed);
 			pthread_mutex_lock((vars->mutex_im_dead));
 			if (*(vars->dead) == 0)
 				*(vars->dead) = 1;
 			pthread_mutex_unlock((vars->mutex_im_dead));
+			gettimeofday(&end, NULL);
+			time_that_philo_lived = ((end.tv_sec - vars->born_philo.tv_sec) * 1000) + \
+			((end.tv_usec - vars->born_philo.tv_usec) / 1000);
+			printf("%s[%ld ms] %d im dead %s\n", RED, time_that_philo_lived, vars->id_fork.id, FN);
 			break ;
 		}
 		if (check_if_finish(vars))
@@ -170,11 +175,10 @@ void	wait_to_sit(t_2link_circ_list *vars)
 		n_philos_sitting[aux++] = 0;
 	while (1)
 	{
-		//printf("aaa\n");
 		ft_usleep(10, vars);
 		pthread_mutex_lock(&(vars->mutex.im_arriving));
 		if (((vars->arriving_philos)))
-			n_philos_sitting[(vars->id_fork.id - 1)] --;
+			n_philos_sitting[(vars->id_fork.id)] = 1;
 		pthread_mutex_unlock(&(vars->mutex.im_arriving));	
 		counter = vars->routine.n_philos;
 		aux = 0;

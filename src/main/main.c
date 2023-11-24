@@ -91,7 +91,7 @@ int	main(int argc, char **argv)
 	int					num_threads;
 	int					err;
 
-	printf("giatafa\n");
+	
 	if (verify_args(--argc, ++argv))
 		return (1);
 	if (create_list_philo(argc, argv, &list))
