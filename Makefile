@@ -14,7 +14,7 @@ SRCS := src/main/main.c		\
 OBJS := $(SRCS:src/%.c=objs/%.o)
 
 # Ruta de compilación
-CFLAGS = -Wall -Wextra -Werror -I libraries
+CFLAGS = -Wall -Wextra -Werror -I libraries -O3
 LDFLAGS = -pthread # Si estás usando pthread
 
 RM = /bin/rm -rf

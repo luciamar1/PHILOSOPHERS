@@ -3,6 +3,7 @@
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
 {
 	pthread_mutex_destroy((*vars)->mutex_im_dead);
+	pthread_mutex_destroy((*vars)->mutex_all_sit);
 	free((*vars)->dead);
 	
 	if (*vars)
@@ -20,12 +21,12 @@ int	verify_args(int argc, char **argv)
 	}
 	while (*argv)
 	{
-		if (ft_arr_isdigit(*argv) == 1)
+		if (ft_arr_isdigit(*argv) == 0)
 		{
 			write(2, "the type of arguments are incorrect\n", 37);
 			return (1);
 		}
-		argv ++;
+		argv++;
 	}
 	return (0);
 }
@@ -48,7 +49,7 @@ int	create_routine_struct(int argc, char **argv, t_philo_routine *routine, int n
 	if (argc == 5)
 		(*routine).number_of_times = ft_atoi_chetao(argv[4], &err);
 	else 
-		(*routine).number_of_times = 0;
+		(*routine).number_of_times = -1;
 	return (0);
 }
 
@@ -59,14 +60,19 @@ int create_list_philo(int argc, char **argv, t_2link_circ_list **lista)
 	int					n_philo;
 	t_philo_routine		routine;
 	int					*dead;
+	int					*all_sit;
 
 	dead = malloc(4);
 	if (!dead)
+		return 1;
+	all_sit = malloc(4);
+	if(!all_sit)
 		return 1;
 	//arriving_philos = malloc(4);
 	//if (!arriving_philos)
 	//	return 1;
 	*dead = 0;
+	*all_sit = 0;
 	err = 0;
 	n_philo = ft_atoi_chetao(argv[0], &err);
 	if (err)
@@ -76,7 +82,7 @@ int create_list_philo(int argc, char **argv, t_2link_circ_list **lista)
 	counter = 0;
 	while (n_philo)
 	{
-		if (create_2link_circlist(lista, create_dict_int(counter), routine, dead))
+		if (create_2link_circlist(lista, create_dict_int(counter), routine, dead, all_sit))
 			return (perror("create_list_philo: "), 1);
 		n_philo --;
 		counter ++;
@@ -90,7 +96,6 @@ int	main(int argc, char **argv)
 	pthread_t			*id_threads;
 	int					num_threads;
 	int					err;
-
 	
 	if (verify_args(--argc, ++argv))
 		return (1);

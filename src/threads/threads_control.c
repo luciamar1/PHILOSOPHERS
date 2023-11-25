@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 17:12:13 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/20 12:50:53 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/11/25 02:15:37 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,18 @@ int	eating(t_2link_circ_list *vars)
 			if (try_to_take_fork(&(vars->mutex.fork), \
 				&(vars->id_fork.fork)))
 			{
-				if (ft_usleep(vars->routine.time_to_eat, vars))
-					return (1);
+				pthread_mutex_lock(&(vars->mutex.print));
 				gettimeofday(&(t_eat), NULL);
 				pthread_mutex_lock(&(vars->mutex.t_born_philo));
 				time_alive = ((t_eat.tv_sec - vars->born_philo.tv_sec) * 1000 + (t_eat.tv_usec - vars->born_philo.tv_usec) / 1000);
 				pthread_mutex_unlock(&(vars->mutex.t_born_philo));
-				pthread_mutex_lock(&(vars->mutex.print));
 				printf("%s[%ld ms] %d is eating%s\n", BLUE, time_alive, vars->id_fork.id, FN);
 				pthread_mutex_unlock(&(vars->mutex.print));
+				pthread_mutex_lock(&(vars->mutex.t_start_eating));
+				gettimeofday(&(vars->start_eating), NULL);
+				pthread_mutex_unlock(&(vars->mutex.t_start_eating));
+				if (ft_usleep(vars->routine.time_to_eat * 1000, vars))
+					return (1);
 				change_fork_value(&(vars->next->mutex.fork), \
 					&(vars->next->id_fork.fork), 0);
 				change_fork_value(&(vars->mutex.fork), \
@@ -80,23 +83,24 @@ int	sleeping(t_2link_circ_list *vars)
 	struct timeval				t_sleep;
 	long int					sleep;
 
-	if (ft_usleep(vars->routine.time_to_sleep, vars))
-		return (1);
+	pthread_mutex_lock(&(vars->mutex.print));
 	gettimeofday(&(t_sleep), NULL);
 	pthread_mutex_lock(&(vars->mutex.t_born_philo));
 	sleep = ((t_sleep.tv_sec - vars->born_philo.tv_sec) * 1000 + (t_sleep.tv_usec - vars->born_philo.tv_usec) / 1000);
 	pthread_mutex_unlock(&(vars->mutex.t_born_philo));
-	pthread_mutex_lock(&(vars->mutex.print));
 	printf("%s[%ld ms] %d is sleeping %s\n", GREEN, sleep, vars->id_fork.id, FN);
 	pthread_mutex_unlock(&(vars->mutex.print));
+	if (ft_usleep(vars->routine.time_to_sleep * 1000, vars))
+		return (1);
 	return (0);
 }
 
 void	thinking(t_2link_circ_list *vars)
 {
 	struct timeval				t_think;
-	gettimeofday(&(t_think), NULL);
+
 	pthread_mutex_lock(&(vars->mutex.print));
+	gettimeofday(&(t_think), NULL);
 	printf("%s[%ld ms] %d is thinking %s\n", PINK, ((t_think.tv_sec - vars->born_philo.tv_sec) * 1000 + (t_think.tv_usec - vars->born_philo.tv_usec) / 1000), vars->id_fork.id, FN);
 	pthread_mutex_unlock(&(vars->mutex.print));
 }

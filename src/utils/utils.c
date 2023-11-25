@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 13:44:46 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/14 20:05:06 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/11/25 00:41:43 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ int	ft_arr_isdigit(char *arr)
 	while (*arr)
 	{
 		if (*arr < '0' || *arr > '9')
-			return (1);
+			return (0);
 		else
 			arr ++;
 	}
-	return (0);
+	return (1);
 }
 
 int	ft_isalpha(int c)

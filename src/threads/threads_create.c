@@ -16,11 +16,6 @@ int	im_dead_(t_2link_circ_list *vars)
 
 int	actions(t_2link_circ_list *vars)
 {
-	
-	//printf("actions impar? == %d\n", vars->id_fork.id);
-	pthread_mutex_lock(&(vars->mutex.t_start_eating));
-	gettimeofday(&(vars->start_eating), NULL);
-	pthread_mutex_unlock(&(vars->mutex.t_start_eating));
 	if (eating(vars))
 		return (1);
 	if (im_dead_(vars))
@@ -40,12 +35,16 @@ void	number_actions(t_2link_circ_list *vars)
 {
 	int	n_times;
 
-	pthread_mutex_lock(&(vars->mutex.im_arriving));
-	vars->arriving_philos = 1;
-	pthread_mutex_unlock(&(vars->mutex.im_arriving));
-	wait_to_sit(vars);
+	pthread_mutex_lock(vars->mutex_all_sit);
+	*(vars->all_sit) = (*(vars->all_sit)) + 1;
+	//printf("actions %d\n", (*(vars->all_sit)));
+	pthread_mutex_unlock(vars->mutex_all_sit);
+	// pthread_mutex_lock(&(vars->mutex.im_arriving));
+	// vars->arriving_philos = 1;
+	// pthread_mutex_unlock(&(vars->mutex.im_arriving));
+	//wait_to_sit(vars);
 
-	if (vars->routine.number_of_times)
+	if (vars->routine.number_of_times >= 0)
 	{
 		n_times = vars->routine.number_of_times;
 		while (n_times)
@@ -139,12 +138,9 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 		time_elapsed = ((end.tv_sec - vars->start_eating.tv_sec) * 1000) + \
 			((end.tv_usec - vars->start_eating.tv_usec) / 1000);
 		pthread_mutex_unlock(&(vars->mutex.t_start_eating));
+		//printf("%lld: %d\n", time_elapsed, vars->id_fork.id);
 		if ((long long) vars->routine.time_to_die < time_elapsed)
 		{
-			//sleep(1);
-			// kill_all(vars);
-			//printf("calculate impar? == %d\n", vars->id_fork.id);
-			//printf("tiempo start eating %lld\n", time_elapsed);
 			pthread_mutex_lock((vars->mutex_im_dead));
 			if (*(vars->dead) == 0)
 				*(vars->dead) = 1;
@@ -152,7 +148,7 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 			gettimeofday(&end, NULL);
 			time_that_philo_lived = ((end.tv_sec - vars->born_philo.tv_sec) * 1000) + \
 			((end.tv_usec - vars->born_philo.tv_usec) / 1000);
-			printf("%s[%ld ms] %d im dead %s\n", RED, time_that_philo_lived, vars->id_fork.id, FN);
+			printf("%s[%ld ms] %d is dead %s\n", RED, time_that_philo_lived, vars->id_fork.id, FN);
 			break ;
 		}
 		if (check_if_finish(vars))
@@ -160,38 +156,24 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 			break ;
 		}
 		vars = vars->next;
+		ft_usleep(1000, vars);
 	}
 }
 
 void	wait_to_sit(t_2link_circ_list *vars)
 {
-	int counter;
-	int	n_philos_sitting[vars->routine.n_philos];
-	int aux;
 
-	aux = 0;
-	counter = vars->routine.n_philos;
-	while (counter --)
-		n_philos_sitting[aux++] = 0;
 	while (1)
 	{
-		ft_usleep(10, vars);
-		pthread_mutex_lock(&(vars->mutex.im_arriving));
-		if (((vars->arriving_philos)))
-			n_philos_sitting[(vars->id_fork.id)] = 1;
-		pthread_mutex_unlock(&(vars->mutex.im_arriving));	
-		counter = vars->routine.n_philos;
-		aux = 0;
-		while(counter )
+		pthread_mutex_lock((vars->mutex_all_sit));
+		//printf("aaa aa %d %d\n", (*(vars->all_sit)), vars->routine.n_philos);
+		if ((*(vars->all_sit)) >= vars->routine.n_philos)
 		{
-			if(n_philos_sitting[aux++] == 0)
-				break ;
-			counter --;
-		}
-		if (counter == 0)
+			//printf("mecahis\n");
+			pthread_mutex_unlock((vars->mutex_all_sit));
 			break;
-		vars = vars->next;
-		
+		}
+		pthread_mutex_unlock((vars->mutex_all_sit));
 	}
 }
 
@@ -206,19 +188,19 @@ int	create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads)
 	while (aux)
 	{
 		if (pthread_create(&threads[counter], NULL, f_hilo, vars))
-			return (perror("pthread_create fail\n"), 1);
+			return (perror("pthread_create fail"), 1);
 		vars = vars->next;
 		aux --;
 		counter ++;
 	}
 	wait_to_sit(vars);
-	counter = 0;
 	calculate_thread_death(vars);
+	counter = 0;
 	while (n_threads)
 	{
 		espera = pthread_join(threads[counter], NULL);
 		if (espera)
-			return (perror("wait pthread fail\n"), 1);
+			return (perror("wait pthread fail"), 1);
 		n_threads --;
 		counter ++;
 	}
