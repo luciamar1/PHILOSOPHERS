@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucia-ma <lucia-ma@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 16:44:34 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/10/06 17:18:03 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/11/27 19:34:44 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
 
 t_ldictionary	*l_dictionary_last(t_ldictionary *lst)
 {

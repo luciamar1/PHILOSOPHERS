@@ -1,13 +1,25 @@
-#ifndef PHILOSOPHERS_H
-# define PHILOSOPHERS_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/27 19:26:09 by lucia-ma          #+#    #+#             */
+/*   Updated: 2023/11/27 19:35:38 by lucia-ma         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <stdint.h>
-#include <sys/time.h>
+#ifndef PHILO_H
+# define PHILO_H
+
+# include <stdio.h>
+# include <string.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <pthread.h>
+# include <stdint.h>
+# include <sys/time.h>
 
 // COLORS
 # define RED	"\033[31m"
@@ -27,15 +39,20 @@ typedef struct s_mutex
 	pthread_mutex_t	id;
 	pthread_mutex_t	im_arriving;
 	pthread_mutex_t	t_start_eating;
-	pthread_mutex_t t_born_philo;
+	pthread_mutex_t	t_born_philo;
 }	t_mutex;
 
-typedef struct	s_dictionary
+typedef struct s_dictionary
 {
 	int	id;
 	int	fork;
 }	t_dictionary;
 
+typedef struct s_statement_var
+{
+	int	*dead;
+	int	*all_sit;
+}	t_statement_var;
 
 typedef struct s_philo_routine
 {
@@ -45,9 +62,6 @@ typedef struct s_philo_routine
 	int					number_of_times;
 	int					n_philos;
 }	t_philo_routine;
-
-//[3000ms] 2 is thinking
-//born filo unico
 
 typedef struct s_2link_circ_list
 {
@@ -67,42 +81,40 @@ typedef struct s_2link_circ_list
 	struct s_2link_circ_list	*prev;
 }	t_2link_circ_list;
 
-
-
 //    utils
-int	ft_arr_isdigit(char *arr);
-int	ft_atoi_chetao(const char *str, int *error);
+int				ft_arr_isdigit(char *arr);
+int				ft_atoi_chetao(const char *str, int *error);
 t_dictionary	create_dict_int(int id);
-int	is_impar(int num);
-void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads);
-void	ft_miguel_usleep(long long useconds);
-int	ft_usleep(long long useconds, t_2link_circ_list *philo);
+int				is_impar(int num);
+void			clear_philo(t_2link_circ_list **vars, pthread_t **id_threads);
+int				ft_usleep(long long useconds, t_2link_circ_list *philo);
 
-
-
-//     utils  2linked circle list
-int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
-	t_philo_routine routine, int *dead, int *all_sit);
-void	printf_fork_2link_circ_list(t_2link_circ_list *list);
-int		len_dlist(t_2link_circ_list *stack);
-void	printf_dlist_ind(t_2link_circ_list *list);
-int		clear_2link_circ_list(t_2link_circ_list **list);
+//      utils  2linked circle list
+int				create_2link_circlist(t_2link_circ_list **head, \
+					t_dictionary id_fork, t_philo_routine routine, \
+					t_statement_var statement_var);
+void			printf_fork_2link_circ_list(t_2link_circ_list *list);
+int				len_dlist(t_2link_circ_list *stack);
+void			printf_dlist_ind(t_2link_circ_list *list);
+int				clear_2link_circ_list(t_2link_circ_list **list);
 
 //      threads_create
-void	*f_hilo(void *args);
-int		create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads);
+void			*f_hilo(void *args);
+int				create_threads(int n_threads, t_2link_circ_list *vars, \
+					pthread_t *threads);
 
 //      threads_utils
-int		mutex_init(t_2link_circ_list *list);
-void	mutex_destroy(t_2link_circ_list *list);
-void	calculate_thread_death(t_2link_circ_list *vars);
-int	im_dead_(t_2link_circ_list *vars);
-//void	wait_to_sit(t_2link_circ_list *vars);
+int				mutex_init(t_2link_circ_list *list);
+void			mutex_destroy(t_2link_circ_list *list);
+void			calculate_thread_death(t_2link_circ_list *vars);
+int				im_dead_(t_2link_circ_list *vars);
+void			print_status(t_2link_circ_list *vars, int action);
+void			change_fork_value(pthread_mutex_t	*mutex_fork, \
+					int *fork, int state);
 
 //		threads_control
-int	eating(t_2link_circ_list *vars);
-int	sleeping(t_2link_circ_list *vars);
-void	thinking(t_2link_circ_list *vars);
-
+int				eating(t_2link_circ_list *vars);
+int				sleeping(t_2link_circ_list *vars);
+void			thinking(t_2link_circ_list *vars);
 
 #endif

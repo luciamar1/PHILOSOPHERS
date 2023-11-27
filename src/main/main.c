@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/27 18:49:37 by lucia-ma          #+#    #+#             */
+/*   Updated: 2023/11/27 19:42:23 by lucia-ma         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
@@ -5,7 +17,6 @@ void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
 	pthread_mutex_destroy((*vars)->mutex_im_dead);
 	pthread_mutex_destroy((*vars)->mutex_all_sit);
 	free((*vars)->dead);
-	
 	if (*vars)
 		clear_2link_circ_list(vars);
 	if (*id_threads)
@@ -31,48 +42,41 @@ int	verify_args(int argc, char **argv)
 	return (0);
 }
 
-int	create_routine_struct(int argc, char **argv, t_philo_routine *routine, int n_philos)
+/* ************************************************************************** */
+int	create_routine_struct(int argc, char **argv, t_philo_routine *rou, int n_ph)
 {
 	int				err;
 
 	err = 0;
-	(*routine).n_philos = n_philos;
-	(*routine).time_to_die = ft_atoi_chetao(argv[1], &err);
+	(*rou).n_philos = n_ph;
+	(*rou).time_to_die = ft_atoi_chetao(argv[1], &err);
 	if (err)
 		return (1);
-	(*routine).time_to_eat = ft_atoi_chetao(argv[2], &err);
+	(*rou).time_to_eat = ft_atoi_chetao(argv[2], &err);
 	if (err)
 		return (1);
-	(*routine).time_to_sleep = ft_atoi_chetao(argv[3], &err);
+	(*rou).time_to_sleep = ft_atoi_chetao(argv[3], &err);
 	if (err)
 		return (1);
 	if (argc == 5)
-		(*routine).number_of_times = ft_atoi_chetao(argv[4], &err);
-	else 
-		(*routine).number_of_times = -1;
+		(*rou).number_of_times = ft_atoi_chetao(argv[4], &err);
+	else
+		(*rou).number_of_times = -1;
 	return (0);
 }
 
-int create_list_philo(int argc, char **argv, t_2link_circ_list **lista)
+int	create_list_philo(int argc, char **argv, t_2link_circ_list **lista)
 {
 	int					err;
 	int					counter;
 	int					n_philo;
 	t_philo_routine		routine;
-	int					*dead;
-	int					*all_sit;
+	t_statement_var		statement_var;
 
-	dead = malloc(4);
-	if (!dead)
-		return 1;
-	all_sit = malloc(4);
-	if(!all_sit)
-		return 1;
-	//arriving_philos = malloc(4);
-	//if (!arriving_philos)
-	//	return 1;
-	*dead = 0;
-	*all_sit = 0;
+	statement_var.all_sit = ((statement_var.dead = malloc(4)), malloc(4));
+	if (!statement_var.dead || !statement_var.all_sit)
+		return (1);
+	*statement_var.all_sit = ((*statement_var.dead = 0), 0);
 	err = 0;
 	n_philo = ft_atoi_chetao(argv[0], &err);
 	if (err)
@@ -82,10 +86,10 @@ int create_list_philo(int argc, char **argv, t_2link_circ_list **lista)
 	counter = 0;
 	while (n_philo)
 	{
-		if (create_2link_circlist(lista, create_dict_int(counter), routine, dead, all_sit))
+		if (create_2link_circlist(lista, create_dict_int(counter), \
+			routine, statement_var))
 			return (perror("create_list_philo: "), 1);
-		n_philo --;
-		counter ++;
+		counter = ((n_philo --), counter + 1);
 	}
 	return (0);
 }
@@ -96,20 +100,9 @@ int	main(int argc, char **argv)
 	pthread_t			*id_threads;
 	int					num_threads;
 	int					err;
-	
-	if (verify_args(--argc, ++argv))
-		return (1);
-	if (create_list_philo(argc, argv, &list))
-		return (1);
 
-	// int i = 0;
-	// list->dead = &i;
-	// printf("bbbbb == %d\n", (int)(*(list->dead)));
-	
-	// printf_dlist_ind(list);
-	// printf("aaaaa == %p\n", list->dead);
-	// printf("aaaaa == %p\n", list->next->dead);
-	// 	sleep(5);
+	if (verify_args(--argc, ++argv) || create_list_philo(argc, argv, &list))
+		return (1);
 	if (!list)
 		printf("NO HAY LISTA\n");
 	err = 0;

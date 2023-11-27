@@ -6,19 +6,42 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/25 04:19:18 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/11/27 19:42:30 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void	create_list_aux(t_2link_circ_list **head, t_philo_routine routine, \
+	t_statement_var statement_var, t_2link_circ_list **new)
+{
+	if (*head)
+	{
+		(*new)->mutex_im_dead = (*head)->mutex_im_dead;
+		(*new)->mutex_all_sit = (*head)->mutex_all_sit;
+	}
+	(*new)->dead = statement_var.dead;
+	(*new)->all_sit = statement_var.all_sit;
+	(*new)->routine = routine;
+	(*new)->threads_ended = 0;
+	if (!*head)
+		(*new)->next = ((*new)->prev = (*new), (*new));
+	else
+	{
+		(*new)->next = *head;
+		(*new)->prev = (*head)->prev;
+		(*head)->prev = (*new);
+		(*new)->prev->next = (*new);
+	}
+	*head = (*new)->next ;
+}
+
 int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
-	t_philo_routine routine, int *dead, int *all_sit)
+	t_philo_routine routine, t_statement_var statement_var)
 {
 	t_2link_circ_list	*new;
 
 	new = malloc(sizeof(t_2link_circ_list));
-
 	if (!new || mutex_init(new))
 	{
 		if (*head)
@@ -35,33 +58,11 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
 			return (clear_philo(&new, NULL), perror(""), 1);
 		if (pthread_mutex_init((new->mutex_all_sit), NULL))
 			return (clear_philo(&new, NULL), perror(""), 1);
-		printf("aaaaaaa %p\n", new->mutex_all_sit);
 		if (pthread_mutex_init((new->mutex_im_dead), NULL))
 			return (clear_philo(&new, NULL), perror(""), 1);
 	}
-	else
-	{
-		new->mutex_im_dead = (*head)->mutex_im_dead;
-		new->mutex_all_sit = (*head)->mutex_all_sit;
-	}
-	new->dead = dead;
-	new->all_sit = all_sit;
-	//new->arriving_philos = 0;
 	new->id_fork = id_fork;
-	new->routine = routine;
-	new->threads_ended = 0;
-	// printf("guatafac\n");
-	// printf("mutex ==  %p\n", new->mutex_im_dead);
-	if (!*head)
-		new->next = (new->prev = new, new);
-	else
-	{
-		new->next = *head;
-		new->prev = (*head)->prev;
-		(*head)->prev = new;
-		new->prev->next = new;
-	}
-	*head = new->next ;
+	create_list_aux (head, routine, statement_var, &new);
 	return (0);
 }
 
@@ -97,25 +98,6 @@ int	len_dlist(t_2link_circ_list *stack)
 		stack = stack->next;
 	}
 	return (len);
-}
-
-void	printf_dlist_ind(t_2link_circ_list *list)
-{
-	t_2link_circ_list	*start;
-
-	if (!list)
-		return ;
-	start = list;
-	printf("ind list == %d\n", (int) list->id_fork.id);
-	if (list->next)
-		list = list->next;
-	while (list != start)
-	{
-		printf("ind list  ==  %d\n", (int) list->id_fork.id);
-		if (list->next)
-			list = list->next;
-	}
-	printf("\n\n");
 }
 
 int	clear_2link_circ_list(t_2link_circ_list **list)
