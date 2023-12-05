@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 17:12:13 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/27 19:06:56 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/05 20:56:09 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int	try_to_take_fork(pthread_mutex_t	*mutex_fork, int *fork)
 
 int	eating_aux(t_2link_circ_list *vars)
 {
+	if (im_dead_(vars))
+			return (1);
 	print_status(vars, 1);
 	pthread_mutex_lock(&(vars->mutex.t_start_eating));
 	gettimeofday(&(vars->start_eating), NULL);
@@ -48,6 +50,7 @@ int	eating(t_2link_circ_list *vars)
 		if (try_to_take_fork(&(vars->next->mutex.fork), \
 			&(vars->next->id_fork.fork)))
 		{
+
 			if (try_to_take_fork(&(vars->mutex.fork), \
 				&(vars->id_fork.fork)))
 			{
@@ -63,7 +66,7 @@ int	eating(t_2link_circ_list *vars)
 				change_fork_value(&(vars->next->mutex.fork), \
 					&(vars->next->id_fork.fork), 0);
 		}
-		ft_usleep(500, vars);
+		ft_usleep(100, vars);
 	}
 	return (0);
 }

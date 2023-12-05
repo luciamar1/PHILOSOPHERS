@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:26:09 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/27 19:35:38 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/05 16:11:31 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ typedef struct s_mutex
 	pthread_mutex_t	id;
 	pthread_mutex_t	im_arriving;
 	pthread_mutex_t	t_start_eating;
-	pthread_mutex_t	t_born_philo;
 }	t_mutex;
 
 typedef struct s_dictionary

@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:11:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/27 19:14:40 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/04 13:38:29 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	calculate_thread_death(t_2link_circ_list *vars)
 		if (check_if_finish(vars))
 			break ;
 		vars = vars->next;
-		ft_usleep(1000, vars);
+		ft_usleep(200, vars);
 	}
 }
 

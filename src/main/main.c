@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 18:49:37 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/11/27 19:42:23 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/05 19:28:41 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ int	main(int argc, char **argv)
 	int					num_threads;
 	int					err;
 
+	list = NULL;
 	if (verify_args(--argc, ++argv) || create_list_philo(argc, argv, &list))
 		return (1);
 	if (!list)
