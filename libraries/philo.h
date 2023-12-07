@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:26:09 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/05 16:11:31 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/07 23:26:16 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,8 @@ void			change_fork_value(pthread_mutex_t	*mutex_fork, \
 					int *fork, int state);
 
 //		threads_control
-int				eating(t_2link_circ_list *vars);
+int				eating_par(t_2link_circ_list *vars);
+int				eating_impar(t_2link_circ_list *vars);
 int				sleeping(t_2link_circ_list *vars);
 void			thinking(t_2link_circ_list *vars);
 

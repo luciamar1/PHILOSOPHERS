@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:08:33 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/05 20:23:37 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/07 23:25:38 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,23 @@ int	actions(t_2link_circ_list *vars)
 {
 	if (im_dead_(vars))
 		return (1);
-	if (eating(vars))
-		return (1);
+	pthread_mutex_lock(&(vars->mutex.id));
+	if (is_impar(vars->id_fork.id))
+	{
+		if (eating_impar(vars))
+		{
+			pthread_mutex_unlock(&(vars->mutex.id));
+			return (1);
+		}
+		pthread_mutex_unlock(&(vars->mutex.id));
+	}
+	else
+	{
+		if (eating_par(vars))
+		{
+			return(1);
+		}
+	}
 	if (im_dead_(vars))
 		return (1);
 	if (sleeping(vars))
