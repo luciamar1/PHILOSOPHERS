@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 18:49:37 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/05 19:28:41 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/11 15:36:53 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
 {
 	pthread_mutex_destroy((*vars)->mutex_im_dead);
+	pthread_mutex_destroy((*vars)->mutex_print);
 	pthread_mutex_destroy((*vars)->mutex_all_sit);
 	free((*vars)->dead);
 	if (*vars)

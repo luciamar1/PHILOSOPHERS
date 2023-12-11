@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 17:12:13 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/07 23:22:11 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/11 20:49:44 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	try_to_take_fork(pthread_mutex_t	*mutex_fork, int *fork)
 int	eating_aux(t_2link_circ_list *vars)
 {
 	if (im_dead_(vars))
-			return (1);
+		return (1);
 	print_status(vars, 1);
 	pthread_mutex_lock(&(vars->mutex.t_start_eating));
 	gettimeofday(&(vars->start_eating), NULL);
@@ -48,11 +48,10 @@ int	eating_impar(t_2link_circ_list *vars)
 		if (im_dead_(vars))
 			return (1);
 		if (try_to_take_fork(&(vars->mutex.fork), \
-			&(vars->next->id_fork.fork)))
+			&(vars->id_fork.fork)))
 		{
-
 			if (try_to_take_fork(&(vars->next->mutex.fork), \
-				&(vars->id_fork.fork)))
+				&(vars->next->id_fork.fork)))
 			{
 				if (eating_aux(vars))
 					return (1);
@@ -64,7 +63,7 @@ int	eating_impar(t_2link_circ_list *vars)
 			}
 			else
 				change_fork_value(&(vars->mutex.fork), \
-					&(vars->next->id_fork.fork), 0);
+					&(vars->id_fork.fork), 0);
 		}
 		ft_usleep(100, vars);
 	}
@@ -80,23 +79,22 @@ int	eating_par(t_2link_circ_list *vars)
 		if (try_to_take_fork(&(vars->next->mutex.fork), \
 			&(vars->next->id_fork.fork)))
 		{
-
 			if (try_to_take_fork(&(vars->mutex.fork), \
 				&(vars->id_fork.fork)))
 			{
 				if (eating_aux(vars))
 					return (1);
-				change_fork_value(&(vars->next->mutex.fork), \
-					&(vars->next->id_fork.fork), 0);
 				change_fork_value(&(vars->mutex.fork), \
 					&(vars->id_fork.fork), 0);
+				change_fork_value(&(vars->next->mutex.fork), \
+					&(vars->next->id_fork.fork), 0);
 				break ;
 			}
 			else
 				change_fork_value(&(vars->next->mutex.fork), \
 					&(vars->next->id_fork.fork), 0);
 		}
-		ft_usleep(100, vars);
+		ft_usleep(500, vars);
 	}
 	return (0);
 }
@@ -113,5 +111,6 @@ int	sleeping(t_2link_circ_list *vars)
 
 void	thinking(t_2link_circ_list *vars)
 {
+	ft_usleep((vars->routine.time_to_eat - vars->routine.time_to_sleep + 2) * 1000, NULL);
 	print_status(vars, 2);
 }

@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:09:33 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/05 20:17:44 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/11 22:42:02 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 int	mutex_init(t_2link_circ_list *list)
 {
 	if (pthread_mutex_init(&(list->mutex.fork), NULL))
-		return (clear_philo(&list, NULL), perror(""), 1);
-	if (pthread_mutex_init(&(list->mutex.print), NULL))
 		return (clear_philo(&list, NULL), perror(""), 1);
 	if (pthread_mutex_init(&(list->mutex.id), NULL))
 		return (clear_philo(&list, NULL), perror(""), 1);
@@ -37,7 +35,6 @@ void	mutex_destroy(t_2link_circ_list *list)
 	while (num)
 	{
 		pthread_mutex_destroy(&(list->mutex.fork));
-		pthread_mutex_destroy(&(list->mutex.print));
 		pthread_mutex_destroy(&(list->mutex.id));
 		pthread_mutex_destroy(&(list->mutex.threads_ended));
 		pthread_mutex_destroy(&(list->mutex.t_start_eating));
@@ -64,7 +61,8 @@ void	print_status(t_2link_circ_list *vars, int action)
 	gettimeofday(&(actual_time), NULL);
 	t = ((actual_time.tv_sec - vars->born_philo.tv_sec) * 1000 + \
 		(actual_time.tv_usec - vars->born_philo.tv_usec) / 1000);
-	pthread_mutex_lock(&(vars->mutex.print));
+	pthread_mutex_lock(vars->mutex_print);
+	// printf("aaaaaaaa print status\n");
 	if (action == 1)
 	{
 		printf("%s[%ld ms] %d has taken a fork%s\n", YELLOW, t, \
@@ -78,6 +76,9 @@ void	print_status(t_2link_circ_list *vars, int action)
 	if (action == 3)
 		printf("%s[%ld ms] %d is sleeping%s\n", GREEN, t, vars->id_fork.id, FN);
 	if (action == 4)
-		printf("%s[%ld ms] %d is dead %s\n", RED, t, vars->id_fork.id, FN);
-	pthread_mutex_unlock(&(vars->mutex.print));
+	{
+		if(check_if_finish(vars) != 1)
+			printf("%s[%ld ms] %d is dead %s\n", RED, t, vars->id_fork.id, FN);
+	}
+	pthread_mutex_unlock((vars->mutex_print));
 }

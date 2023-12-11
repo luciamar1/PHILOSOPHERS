@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:26:09 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/07 23:26:16 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/11 22:42:50 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ typedef struct s_mutex
 {
 	pthread_mutex_t	fork;
 	pthread_mutex_t	threads_ended;
-	pthread_mutex_t	print;
 	pthread_mutex_t	id;
 	pthread_mutex_t	im_arriving;
 	pthread_mutex_t	t_start_eating;
@@ -64,6 +63,7 @@ typedef struct s_philo_routine
 
 typedef struct s_2link_circ_list
 {
+	pthread_mutex_t				*mutex_print;
 	pthread_mutex_t				*mutex_im_dead;
 	pthread_mutex_t				*mutex_all_sit;
 	int							*dead;
@@ -116,5 +116,6 @@ int				eating_par(t_2link_circ_list *vars);
 int				eating_impar(t_2link_circ_list *vars);
 int				sleeping(t_2link_circ_list *vars);
 void			thinking(t_2link_circ_list *vars);
+int				check_if_finish(t_2link_circ_list *vars);
 
 #endif
