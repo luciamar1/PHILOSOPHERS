@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 17:12:13 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/11 20:49:44 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/12 21:56:41 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,40 +37,16 @@ int	eating_aux(t_2link_circ_list *vars)
 	pthread_mutex_unlock(&(vars->mutex.t_start_eating));
 	if (ft_usleep(vars->routine.time_to_eat * 1000, vars))
 		return (1);
-	else
-		return (0);
-}
-
-int	eating_impar(t_2link_circ_list *vars)
-{
-	while (1)
+	if (vars->routine.number_of_times)
 	{
-		if (im_dead_(vars))
-			return (1);
-		if (try_to_take_fork(&(vars->mutex.fork), \
-			&(vars->id_fork.fork)))
-		{
-			if (try_to_take_fork(&(vars->next->mutex.fork), \
-				&(vars->next->id_fork.fork)))
-			{
-				if (eating_aux(vars))
-					return (1);
-				change_fork_value(&(vars->next->mutex.fork), \
-					&(vars->next->id_fork.fork), 0);
-				change_fork_value(&(vars->mutex.fork), \
-					&(vars->id_fork.fork), 0);
-				break ;
-			}
-			else
-				change_fork_value(&(vars->mutex.fork), \
-					&(vars->id_fork.fork), 0);
-		}
-		ft_usleep(100, vars);
+		pthread_mutex_lock(&(vars->mutex.threads_ended));
+		vars->threads_ended --;
+		pthread_mutex_unlock(&(vars->mutex.threads_ended));
 	}
 	return (0);
 }
 
-int	eating_par(t_2link_circ_list *vars)
+int	eating(t_2link_circ_list *vars)
 {
 	while (1)
 	{
@@ -109,8 +85,14 @@ int	sleeping(t_2link_circ_list *vars)
 	return (0);
 }
 
-void	thinking(t_2link_circ_list *vars)
+int	thinking(t_2link_circ_list *vars)
 {
-	ft_usleep((vars->routine.time_to_eat - vars->routine.time_to_sleep + 2) * 1000, NULL);
+	if (im_dead_(vars))
+		return (1);
+	ft_usleep((vars->routine.time_to_eat - vars->routine.time_to_sleep + 2) \
+		* 1000, NULL);
+	if (im_dead_(vars))
+		return (1);
 	print_status(vars, 2);
+	return (0);
 }

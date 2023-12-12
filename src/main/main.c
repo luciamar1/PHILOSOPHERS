@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 18:49:37 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/11 15:36:53 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/12 22:04:31 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	verify_args(int argc, char **argv)
 	}
 	while (*argv)
 	{
-		if (ft_arr_isdigit(*argv) == 0)
+		if (ft_arr_isdigit(*argv) == 0 )
 		{
 			write(2, "the type of arguments are incorrect\n", 37);
 			return (1);
@@ -106,7 +106,7 @@ int	main(int argc, char **argv)
 	if (verify_args(--argc, ++argv) || create_list_philo(argc, argv, &list))
 		return (1);
 	if (!list)
-		printf("NO HAY LISTA\n");
+		return (printf("imposible to start the project\n"), 1);
 	err = 0;
 	num_threads = ft_atoi_chetao(argv[0], &err);
 	if (err)

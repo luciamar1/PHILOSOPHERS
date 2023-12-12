@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:08:33 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/11 22:44:23 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/12 21:55:36 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,43 +16,28 @@ int	actions(t_2link_circ_list *vars)
 {
 	if (im_dead_(vars))
 		return (1);
-	//pthread_mutex_lock(&(vars->mutex.id));
-	// if (is_impar(vars->id_fork.id))
-	// {
-	// 	pthread_mutex_unlock(&(vars->mutex.id));
-	if (eating_impar(vars))
+	if (eating(vars))
 	{
 		return (1);
 	}
-	// }
-	// else
-	// {
-	// 	pthread_mutex_unlock(&(vars->mutex.id));
-	// 	if (eating_impar(vars))
-	// 	{
-	// 		return(1);
-	// 	}
-	// }
 	if (im_dead_(vars))
 		return (1);
 	if (sleeping(vars))
 		return (1);
 	if (im_dead_(vars))
 		return (1);
-	thinking(vars);
+	if (thinking(vars))
+		return (1);
 	return (0);
 }
 
 void	number_actions(t_2link_circ_list *vars)
 {
 	int	n_times;
-	int counter = 0;
 
 	pthread_mutex_lock(vars->mutex_all_sit);
 	*(vars->all_sit) = (*(vars->all_sit)) + 1;
 	pthread_mutex_unlock(vars->mutex_all_sit);
-	if (im_dead_(vars))
-		return ;
 	if (vars->routine.number_of_times >= 0)
 	{
 		if (im_dead_(vars))
@@ -63,12 +48,7 @@ void	number_actions(t_2link_circ_list *vars)
 			if (actions(vars))
 				break ;
 			n_times --;
-			counter ++;
 		}
-			pthread_mutex_lock(&(vars->mutex.threads_ended));
-			vars->threads_ended ++;
-			pthread_mutex_unlock(&(vars->mutex.threads_ended));
-
 	}
 	else
 	{
@@ -101,11 +81,10 @@ void	*f_hilo(void *args)
 
 void	wait_to_sit(t_2link_circ_list *vars)
 {
-
 	while (1)
 	{
 		pthread_mutex_lock(vars->mutex_all_sit);
-		if ((*(vars->all_sit)) >= vars->routine.n_philos )
+		if ((*(vars->all_sit)) >= vars->routine.n_philos)
 		{
 			pthread_mutex_unlock((vars->mutex_all_sit));
 			break ;
@@ -121,7 +100,6 @@ int	create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads)
 	int					espera;
 
 	aux = ((counter = 0), n_threads);
-
 	while (aux)
 	{
 		if (pthread_create(&threads[counter], NULL, f_hilo, vars))
