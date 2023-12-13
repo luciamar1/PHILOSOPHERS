@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/12 21:50:59 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/13 14:03:00 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,22 +77,6 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
 	new->id_fork = id_fork;
 	create_list_aux (head, routine, statement_var, &new);
 	return (0);
-}
-
-void	printf_fork_2link_circ_list(t_2link_circ_list *list)
-{
-	t_2link_circ_list	*head;
-
-	head = list;
-	printf("\n\n\n");
-	printf("id_fork list == %d\n", list->id_fork.fork);
-	list = list->next;
-	while (list != head)
-	{
-		if (list->id_fork.fork)
-			printf("id_fork list == %d\n", list->id_fork.fork);
-		list = list->next;
-	}
 }
 
 int	len_dlist(t_2link_circ_list *stack)

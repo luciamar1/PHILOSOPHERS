@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:23:31 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/11 20:55:57 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/13 14:03:13 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,20 @@ int	ft_usleep(long long useconds, t_2link_circ_list *philo)
 		usleep(100);
 	}
 	return (0);
+}
+
+void	printf_fork_2link_circ_list(t_2link_circ_list *list)
+{
+	t_2link_circ_list	*head;
+
+	head = list;
+	printf("\n\n\n");
+	printf("id_fork list == %d\n", list->id_fork.fork);
+	list = list->next;
+	while (list != head)
+	{
+		if (list->id_fork.fork)
+			printf("id_fork list == %d\n", list->id_fork.fork);
+		list = list->next;
+	}
 }

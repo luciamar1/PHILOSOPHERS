@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 18:49:37 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/12 22:04:31 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/13 14:00:44 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	verify_args(int argc, char **argv)
 	}
 	while (*argv)
 	{
-		if (ft_arr_isdigit(*argv) == 0 )
+		if (ft_arr_isdigit(*argv) == 0)
 		{
 			write(2, "the type of arguments are incorrect\n", 37);
 			return (1);
