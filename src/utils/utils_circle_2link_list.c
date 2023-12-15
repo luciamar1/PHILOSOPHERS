@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/13 14:03:00 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/15 16:45:06 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,9 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
 	if (!new || mutex_init(new))
 	{
 		if (*head)
-			clear_2link_circ_list(head);
+			clear_philo(head, NULL);
+		if (!new)
+			mutex_destroy(new);
 		return (1);
 	}
 	if (!*head)

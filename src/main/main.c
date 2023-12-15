@@ -6,18 +6,27 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 18:49:37 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/13 14:00:44 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/15 16:51:07 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void    leaks(void)
+{
+    system("leaks -q philo");
+}
 
 void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
 {
 	pthread_mutex_destroy((*vars)->mutex_im_dead);
 	pthread_mutex_destroy((*vars)->mutex_print);
 	pthread_mutex_destroy((*vars)->mutex_all_sit);
-	free((*vars)->dead);
+	if ((*vars)->dead)
+		free((*vars)->dead);
+	if ((*vars)->all_sit)
+		free((*vars)->all_sit);
+	mutex_destroy(*vars);
 	if (*vars)
 		clear_2link_circ_list(vars);
 	if (*id_threads)
@@ -76,14 +85,20 @@ int	create_list_philo(int argc, char **argv, t_2link_circ_list **lista)
 
 	statement_var.all_sit = ((statement_var.dead = malloc(4)), malloc(4));
 	if (!statement_var.dead || !statement_var.all_sit)
+	{
+		if (statement_var.dead)
+			free(statement_var.dead);
+		if (statement_var.all_sit)
+			free(statement_var.all_sit);
 		return (1);
+	}
 	*statement_var.all_sit = ((*statement_var.dead = 0), 0);
 	err = 0;
 	n_philo = ft_atoi_chetao(argv[0], &err);
 	if (err)
-		return (1);
+		return (free(statement_var.dead), free(statement_var.all_sit), 1);
 	if (create_routine_struct(argc, argv, &routine, n_philo))
-		return (1);
+		return (free(statement_var.dead), free(statement_var.all_sit), 1);
 	counter = 0;
 	while (n_philo)
 	{
@@ -116,10 +131,11 @@ int	main(int argc, char **argv)
 		return (clear_philo(&list, &id_threads), perror(""), 1);
 	if (create_threads(num_threads, list, id_threads))
 	{
-		mutex_destroy(list);
+		//mutex_destroy(list);
 		return (clear_philo(&list, &id_threads), 1);
 	}
-	mutex_destroy(list);
+	//mutex_destroy(list);
 	clear_philo(&list, &id_threads);
+	atexit(leaks);
 	return (0);
 }
