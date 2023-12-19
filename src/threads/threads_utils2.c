@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:11:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/12 21:35:35 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/19 20:23:48 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,45 @@ int	im_dead_(t_2link_circ_list *vars)
 	}
 	pthread_mutex_unlock((vars->mutex_im_dead));
 	return (0);
+}
+
+void	clear_philo(t_2link_circ_list **vars, pthread_t **id_threads)
+{
+	pthread_mutex_destroy((*vars)->mutex_im_dead);
+	pthread_mutex_destroy((*vars)->mutex_print);
+	pthread_mutex_destroy((*vars)->mutex_no_print);
+	pthread_mutex_destroy((*vars)->mutex_all_sit);
+	if ((*vars)->dead)
+		free((*vars)->dead);
+	if ((*vars)->all_sit)
+		free((*vars)->all_sit);
+	if ((*vars)->no_print)
+		free((*vars)->no_print);
+	if ((*vars)->mutex_im_dead)
+		free((*vars)->mutex_im_dead);
+	if ((*vars)->mutex_print)
+		free((*vars)->mutex_print);
+	if ((*vars)->mutex_no_print)
+		free((*vars)->mutex_no_print);
+	if ((*vars)->mutex_all_sit)
+		free((*vars)->mutex_all_sit);
+	mutex_destroy(*vars);
+	if (*vars)
+		clear_2link_circ_list(vars);
+	if (*id_threads)
+		free(*id_threads);
+}
+
+void	wait_to_sit(t_2link_circ_list *vars)
+{
+	while (1)
+	{
+		pthread_mutex_lock(vars->mutex_all_sit);
+		if ((*(vars->all_sit)) >= vars->routine.n_philos)
+		{
+			pthread_mutex_unlock((vars->mutex_all_sit));
+			break ;
+		}
+		pthread_mutex_unlock((vars->mutex_all_sit));
+	}
 }

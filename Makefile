@@ -73,7 +73,7 @@ leaks: $(OBJS) objs/debug/malloc_debug.o
 	cc $(LDFLAGS) $(OBJS) objs/debug/malloc_debug.o -o $(NAME)
 
 #sanitizer flags#
-sanitize:: CFLAGS += -fsanitize=thread -g3 
+sanitize:: CFLAGS += -fsanitize=thread  
 sanitize:: LDFLAGS += -fsanitize=thread 
 sanitize:: re_nolib
 

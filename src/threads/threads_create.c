@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:08:33 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/12 21:55:36 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/19 20:22:34 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,25 +79,35 @@ void	*f_hilo(void *args)
 	return (NULL);
 }
 
-void	wait_to_sit(t_2link_circ_list *vars)
+void	error_pthread_create(t_2link_circ_list *vars, int counter, \
+	pthread_t *threads)
 {
-	while (1)
+	int	wait_pthread;
+
+	printf("counter %d\n", counter);
+	while (counter)
 	{
-		pthread_mutex_lock(vars->mutex_all_sit);
-		if ((*(vars->all_sit)) >= vars->routine.n_philos)
+		printf("limiando\n");
+		wait_pthread = pthread_join(threads[counter], NULL);
+		if (wait_pthread)
 		{
-			pthread_mutex_unlock((vars->mutex_all_sit));
-			break ;
+			printf("peta\n");
+			pthread_mutex_lock((vars->mutex_im_dead));
+			if (*(vars->dead) == 0)
+				*(vars->dead) = 1;
+			pthread_mutex_unlock((vars->mutex_im_dead));
+			perror("wait pthread fail");
+			return ;
 		}
-		pthread_mutex_unlock((vars->mutex_all_sit));
+		counter --;
 	}
 }
 
 int	create_threads(int n_threads, t_2link_circ_list *vars, pthread_t *threads)
 {
-	int					counter;
-	int					aux;
-	int					espera;
+	int	counter;
+	int	aux;
+	int	espera;
 
 	aux = ((counter = 0), n_threads);
 	while (aux)

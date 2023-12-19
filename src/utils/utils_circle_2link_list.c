@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:47:35 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/15 16:45:06 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/19 20:29:07 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@ void	create_list_aux(t_2link_circ_list **head, t_philo_routine routine, \
 	{
 		(*new)->mutex_im_dead = (*head)->mutex_im_dead;
 		(*new)->mutex_print = (*head)->mutex_print;
+		(*new)->mutex_no_print = (*head)->mutex_no_print;
 		(*new)->mutex_all_sit = (*head)->mutex_all_sit;
 	}
 	(*new)->dead = statement_var.dead;
+	(*new)->no_print = statement_var.no_print;
 	(*new)->all_sit = statement_var.all_sit;
 	(*new)->routine = routine;
 	(*new)->threads_ended = routine.number_of_times;
@@ -39,6 +41,16 @@ void	create_list_aux(t_2link_circ_list **head, t_philo_routine routine, \
 
 int	aux(t_2link_circ_list **new)
 {
+	(*new)->mutex_im_dead = malloc(sizeof(pthread_mutex_t));
+	if (!(*new)->mutex_im_dead)
+		return (clear_philo(new, NULL), perror(""), 1);
+	(*new)->mutex_print = malloc(sizeof(pthread_mutex_t));
+	if (!(*new)->mutex_print)
+		return (clear_philo(new, NULL), perror(""), 1);
+	(*new)->mutex_no_print = malloc(sizeof(pthread_mutex_t));
+	if (!(*new)->mutex_no_print)
+		return (clear_philo(new, NULL), perror(""), 1);
+	(*new)->mutex_all_sit = malloc(sizeof(pthread_mutex_t));
 	if (!(*new)->mutex_all_sit)
 		return (clear_philo(&(*new), NULL), perror(""), 1);
 	if (pthread_mutex_init(((*new)->mutex_all_sit), NULL))
@@ -46,6 +58,8 @@ int	aux(t_2link_circ_list **new)
 	if (pthread_mutex_init(((*new)->mutex_im_dead), NULL))
 		return (clear_philo(&(*new), NULL), perror(""), 1);
 	if (pthread_mutex_init(((*new)->mutex_print), NULL))
+		return (clear_philo(&(*new), NULL), perror(""), 1);
+	if (pthread_mutex_init(((*new)->mutex_no_print), NULL))
 		return (clear_philo(&(*new), NULL), perror(""), 1);
 	return (0);
 }
@@ -66,13 +80,6 @@ int	create_2link_circlist(t_2link_circ_list **head, t_dictionary id_fork, \
 	}
 	if (!*head)
 	{
-		new->mutex_im_dead = malloc(sizeof(pthread_mutex_t));
-		if (!new->mutex_im_dead)
-			return (clear_philo(&new, NULL), perror(""), 1);
-		new->mutex_print = malloc(sizeof(pthread_mutex_t));
-		if (!new->mutex_print)
-			return (clear_philo(&new, NULL), perror(""), 1);
-		new->mutex_all_sit = malloc(sizeof(pthread_mutex_t));
 		if (aux(&new))
 			return (1);
 	}

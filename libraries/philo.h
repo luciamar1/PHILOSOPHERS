@@ -6,7 +6,7 @@
 /*   By: lucia-ma <lucia-ma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 19:26:09 by lucia-ma          #+#    #+#             */
-/*   Updated: 2023/12/13 14:03:29 by lucia-ma         ###   ########.fr       */
+/*   Updated: 2023/12/19 20:27:41 by lucia-ma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_dictionary
 typedef struct s_statement_var
 {
 	int	*dead;
+	int	*no_print;
 	int	*all_sit;
 }	t_statement_var;
 
@@ -64,9 +65,11 @@ typedef struct s_philo_routine
 typedef struct s_2link_circ_list
 {
 	pthread_mutex_t				*mutex_print;
+	pthread_mutex_t				*mutex_no_print;
 	pthread_mutex_t				*mutex_im_dead;
 	pthread_mutex_t				*mutex_all_sit;
 	int							*dead;
+	int							*no_print;
 	int							*all_sit;
 	int							arriving_philos;
 	int							threads_ended;
@@ -107,10 +110,11 @@ int				mutex_init(t_2link_circ_list *list);
 void			mutex_destroy(t_2link_circ_list *list);
 void			calculate_thread_death(t_2link_circ_list *vars);
 int				im_dead_(t_2link_circ_list *vars);
-void			print_status(t_2link_circ_list *vars, int action);
+int				print_status(t_2link_circ_list *vars, int action);
 void			change_fork_value(pthread_mutex_t	*mutex_fork, \
 					int *fork, int state);
 void			printf_fork_2link_circ_list(t_2link_circ_list *list);
+void			wait_to_sit(t_2link_circ_list *vars);
 
 //		threads_control
 int				eating(t_2link_circ_list *vars);
